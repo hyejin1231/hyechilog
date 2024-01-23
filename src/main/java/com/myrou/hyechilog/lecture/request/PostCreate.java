@@ -1,4 +1,4 @@
-package com.myrou.hyechilog.request;
+package com.myrou.hyechilog.lecture.request;
 
 import lombok.Data;
 import lombok.Getter;

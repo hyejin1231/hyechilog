@@ -1,10 +1,8 @@
-package com.myrou.hyechilog.controller;
+package com.myrou.hyechilog.lecture.controller;
 
-import com.myrou.hyechilog.request.PostCreate;
+import com.myrou.hyechilog.lecture.request.PostCreate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @Slf4j
 @RestController
