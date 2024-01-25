@@ -19,16 +19,34 @@ class BlogControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
 
     @DisplayName("게시글 등록을 요청하면 create Blog Content가 출력된다.")
     @Test
-    void create() throws Exception {
+    void createV1() throws Exception {
         // given
         BlogCreateRequest request = BlogCreateRequest.builder()
                 .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+
+        // then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/v1/api/createV1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request))
+                ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("create Blog Content"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @DisplayName("게시글 등록을 요청할 때 title 값이 없으면 '제목은 필수입니다.' 에러 메시지 출력된다.")
+    @Test
+    void create() throws Exception {
+        // given
+        BlogCreateRequest request = BlogCreateRequest.builder()
+                .title("")
                 .content("내용입니다.")
                 .build();
 
@@ -38,7 +56,7 @@ class BlogControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
                 ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("create Blog Content"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("제목은 필수입니다."))
                 .andDo(MockMvcResultHandlers.print());
     }
 }
