@@ -1,7 +1,10 @@
 package com.myrou.hyechilog.api.controller.blog;
 
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
+import com.myrou.hyechilog.api.domain.blog.Blog;
+import com.myrou.hyechilog.api.service.blog.BlogService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -15,9 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping("/v1/api")
 @RestController
 public class BlogController {
+
+    private final BlogService blogService;
 
     /**
      * Blog createV1 : 블로그 글 생성
@@ -67,8 +73,11 @@ public class BlogController {
     }
 
     @PostMapping("/create")
-    public Map<String, String> create(@RequestBody @Valid BlogCreateRequest request) {
+    public ApiResponse create(@RequestBody @Valid BlogCreateRequest request) {
         log.info("request={}", request);
-        return Map.of();
+
+        Blog blog = blogService.write(request);
+
+        return ApiResponse.ok(blog);
     }
 }

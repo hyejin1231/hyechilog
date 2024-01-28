@@ -1,5 +1,6 @@
 package com.myrou.hyechilog.api.controller.blog.request;
 
+import com.myrou.hyechilog.api.domain.blog.Blog;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,5 +21,12 @@ public class BlogCreateRequest {
     public BlogCreateRequest(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public Blog toEntity(BlogCreateRequest request) {
+        return Blog.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .build();
     }
 }

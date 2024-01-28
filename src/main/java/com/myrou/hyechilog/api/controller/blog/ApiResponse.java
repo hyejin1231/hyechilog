@@ -1,5 +1,6 @@
 package com.myrou.hyechilog.api.controller.blog;
 
+import com.myrou.hyechilog.api.domain.blog.Blog;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -19,5 +20,13 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> of(HttpStatus status, String message, T data) {
         return  new ApiResponse<>(status, message, data);
+    }
+
+    public static <T> ApiResponse<T> of(HttpStatus status, T data) {
+        return of(status, status.name(), data);
+    }
+
+    public static <T> ApiResponse ok(T data) {
+        return of(HttpStatus.OK, data);
     }
 }
