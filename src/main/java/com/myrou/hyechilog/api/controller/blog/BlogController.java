@@ -20,7 +20,7 @@ import java.util.Map;
 public class BlogController {
 
     /**
-     * Blog create : 블로그 글 생성
+     * Blog createV1 : 블로그 글 생성
      *
      * @param request
      * @return
@@ -31,11 +31,26 @@ public class BlogController {
         return "create Blog Content";
     }
 
-    @PostMapping("/create")
-    public Map<String, String> create(@RequestBody @Valid BlogCreateRequest request, BindingResult result) {
+    /**
+     * Blog create V2 : 블로그 글 생성 + 파라미터 검증 -> BingingResult 사용
+     * 하지만 이 방법 지양하기
+     * 1. 매번 메서드마다 값을 검증해야 한다.
+     *  -> 개발자가 까먹을 수 있다.
+     *  -> 검증 부분에서 버그가 발생할 여지가 높다.
+     *  -> 지겹다 ^^;
+     * 2. 응답값에 HashMap -> 응답 클래스를 만들어주는게 좋다.
+     * 3. 여러개의 에러 처리 힘듬
+     * 4. 3번 이상의 반복작업은 피해야 한다!! -> 자동화 고려
+     *  ->  코드 && 개발에 관한 모든 것
+     * @param request
+     * @param result
+     * @return
+     */
+    @PostMapping("/createV2")
+    public Map<String, String> createV2(@RequestBody @Valid BlogCreateRequest request, BindingResult result) {
         log.info("request={}", request);
 
-        if (result.hasErrors()) { // request 검증
+        if (result.hasErrors()) { // request 검증 -> 지금은 title, content 두개 뿐이지만 전체 다 언제 검증할 것인가 ..!
             List<FieldError> fieldErrors = result.getFieldErrors();
             FieldError firstFieldError = fieldErrors.get(0);
 
@@ -48,6 +63,12 @@ public class BlogController {
             return error;
         }
 
+        return Map.of();
+    }
+
+    @PostMapping("/create")
+    public Map<String, String> create(@RequestBody @Valid BlogCreateRequest request) {
+        log.info("request={}", request);
         return Map.of();
     }
 }

@@ -43,6 +43,25 @@ class BlogControllerTest {
 
     @DisplayName("게시글 등록을 요청할 때 title 값이 없으면 '제목은 필수입니다.' 에러 메시지 출력된다.")
     @Test
+    void createV2() throws Exception {
+        // given
+        BlogCreateRequest request = BlogCreateRequest.builder()
+                .title("")
+                .content("내용입니다.")
+                .build();
+
+        // then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/v1/api/createV2")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request))
+                ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("제목은 필수입니다."))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @DisplayName("게시글 등록을 요청할 때 title 값이 없으면 '제목은 필수입니다.' 에러 메시지 출력된다.")
+    @Test
     void create() throws Exception {
         // given
         BlogCreateRequest request = BlogCreateRequest.builder()
@@ -55,8 +74,11 @@ class BlogControllerTest {
                         MockMvcRequestBuilders.post("/v1/api/create")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
-                ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("제목은 필수입니다."))
+                ).andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(400))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("BAD_REQUEST"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("제목은 필수입니다."))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty())
                 .andDo(MockMvcResultHandlers.print());
     }
 }
