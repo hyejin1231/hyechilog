@@ -20,7 +20,6 @@ class BlogServiceTest {
 
     @Autowired
     private BlogService blogService;
-
     @Autowired
     private BlogRepository blogRepository;
 
@@ -37,6 +36,9 @@ class BlogServiceTest {
         Blog blog = blogService.write(request);
 
         // then
+        assertThat(blog)
+                .extracting("title", "content").contains("테스트 제목", "테스트 내용");
+
         List<Blog> blogList = blogRepository.findAll();
         assertThat(blogList).hasSize(1)
                 .extracting("title", "content")

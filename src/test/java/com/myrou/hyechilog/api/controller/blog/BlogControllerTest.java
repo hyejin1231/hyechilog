@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.MediaType.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -27,9 +28,6 @@ class BlogControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private BlogRepository blogRepository;
 
     @DisplayName("게시글 등록을 요청하면 create Blog Content가 출력된다.")
     @Test
@@ -43,7 +41,7 @@ class BlogControllerTest {
         // then
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/v1/api/createV1")
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
                 ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("create Blog Content"))
@@ -62,7 +60,7 @@ class BlogControllerTest {
         // then
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/v1/api/createV2")
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
                 ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("제목은 필수입니다."))
@@ -81,12 +79,34 @@ class BlogControllerTest {
         // then
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/v1/api/create")
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
                 ).andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(400))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("제목은 필수입니다."))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @DisplayName("게시글 등록을 요청할 때 content 값이 없으면 '내용은 필수입니다.' 에러 메시지 출력된다.")
+    @Test
+    void errorWhenNoContent() throws Exception {
+        // given
+        BlogCreateRequest request = BlogCreateRequest.builder()
+                .title("제목입니다.")
+                .content("")
+                .build();
+
+        // then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/v1/api/create")
+                                .contentType(APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request))
+                ).andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(400))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("BAD_REQUEST"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("내용은 필수입니다."))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -103,7 +123,7 @@ class BlogControllerTest {
         // when
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/v1/api/create")
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
                 ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
