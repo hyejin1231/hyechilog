@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/v1/api")
+@RequestMapping("/api/v1")
 @RestController
 public class BlogController {
 
@@ -72,7 +69,12 @@ public class BlogController {
         return Map.of();
     }
 
-    @PostMapping("/create")
+    /**
+     * 게시글 등록
+     * @param request
+     * @return
+     */
+    @PostMapping("/blogs/new")
     public ApiResponse create(@RequestBody @Valid BlogCreateRequest request) {
         log.info("request={}", request);
 
@@ -80,4 +82,16 @@ public class BlogController {
 
         return ApiResponse.ok(blog);
     }
+
+    /**
+     * 게시글 1개 조회
+     * @param blogId
+     * @return
+     */
+    @GetMapping("/blogs/{blogId}")
+    public ApiResponse get(@PathVariable(value = "blogId") Long blogId) {
+      return ApiResponse.ok(blogService.get(blogId));
+    }
+
+
 }

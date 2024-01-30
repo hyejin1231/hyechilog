@@ -2,14 +2,19 @@ package com.myrou.hyechilog.api.controller.blog;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
+import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
+import com.myrou.hyechilog.api.service.blog.BlogService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,6 +34,9 @@ class BlogControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private BlogService blogService;
+
     @DisplayName("게시글 등록을 요청하면 create Blog Content가 출력된다.")
     @Test
     void createV1() throws Exception {
@@ -40,7 +48,7 @@ class BlogControllerTest {
 
         // then
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/v1/api/createV1")
+                        MockMvcRequestBuilders.post("/api/v1/createV1")
                                 .contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
                 ).andExpect(MockMvcResultMatchers.status().isOk())
@@ -59,7 +67,7 @@ class BlogControllerTest {
 
         // then
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/v1/api/createV2")
+                        MockMvcRequestBuilders.post("/api/v1/createV2")
                                 .contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
                 ).andExpect(MockMvcResultMatchers.status().isOk())
@@ -78,7 +86,7 @@ class BlogControllerTest {
 
         // then
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/v1/api/create")
+                        MockMvcRequestBuilders.post("/api/v1/blogs/new")
                                 .contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
                 ).andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -100,7 +108,7 @@ class BlogControllerTest {
 
         // then
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/v1/api/create")
+                        MockMvcRequestBuilders.post("/api/v1/blogs/new")
                                 .contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
                 ).andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -122,10 +130,30 @@ class BlogControllerTest {
 
         // when
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/v1/api/create")
+                        MockMvcRequestBuilders.post("/api/v1/blogs/new")
                                 .contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
                 ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("게시글 작성 후 해당 id 값으로 조회하면 작성한 글을 조회한다.")
+    void get() throws Exception {
+        // given
+        BlogCreateRequest request = BlogCreateRequest.builder()
+                .title("제목입니다!!")
+                .content("내용입니다.!!")
+                .build();
+
+        Blog givenBlog = blogService.write(request);
+
+        // then
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/blogs/{blogId}", givenBlog.getId())
+                .contentType(APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value(givenBlog.getTitle()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value(givenBlog.getContent()))
                 .andDo(MockMvcResultHandlers.print());
     }
 }

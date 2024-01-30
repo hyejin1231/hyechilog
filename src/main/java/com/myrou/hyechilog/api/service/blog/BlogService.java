@@ -18,4 +18,8 @@ public class BlogService {
         Blog blog = blogCreateRequest.toEntity(blogCreateRequest);
         return blogRepository.save(blog);
     }
+
+    public Blog get(Long blogId) {
+         return blogRepository.findById(blogId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+    }
 }

@@ -5,6 +5,7 @@ import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,11 @@ class BlogServiceTest {
     private BlogService blogService;
     @Autowired
     private BlogRepository blogRepository;
+
+    @BeforeEach
+    void setUp() {
+        blogRepository.deleteAllInBatch();
+    }
 
     @Test
     @DisplayName("게시글 저장한다.")
@@ -45,6 +51,25 @@ class BlogServiceTest {
                 .containsExactlyInAnyOrder(
                         new Tuple("테스트 제목", "테스트 내용")
                 );
+    }
+
+    @Test
+    @DisplayName("글을 저장하고 그 글의 id 값으로 조회한다.")
+    void get() {
+        // given
+        BlogCreateRequest request = BlogCreateRequest.builder()
+                .title("Hello")
+                .content("World!")
+                .build();
+
+        Blog givenBlog = blogService.write(request);
+
+        // when
+        Blog whenBlog = blogService.get(givenBlog.getId());
+
+        // then
+        assertThat(whenBlog.getTitle()).isEqualTo(givenBlog.getTitle());
+        assertThat(whenBlog.getContent()).isEqualTo(givenBlog.getContent());
     }
 
 }
