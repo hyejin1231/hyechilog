@@ -3,6 +3,7 @@ package com.myrou.hyechilog.api.controller.blog;
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.service.blog.BlogService;
+import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +79,7 @@ public class BlogController {
     public ApiResponse create(@RequestBody @Valid BlogCreateRequest request) {
         log.info("request={}", request);
 
-        Blog blog = blogService.write(request);
+        BlogResponse blog = blogService.write(request);
 
         return ApiResponse.ok(blog);
     }

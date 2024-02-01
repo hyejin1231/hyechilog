@@ -3,6 +3,7 @@ package com.myrou.hyechilog.api.service.blog;
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
+import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,12 +15,15 @@ public class BlogService {
 
     private final BlogRepository blogRepository;
 
-    public Blog write(BlogCreateRequest blogCreateRequest) {
+    public BlogResponse write(BlogCreateRequest blogCreateRequest) {
         Blog blog = blogCreateRequest.toEntity(blogCreateRequest);
-        return blogRepository.save(blog);
+        return BlogResponse.of(blogRepository.save(blog));
     }
 
-    public Blog get(Long blogId) {
-         return blogRepository.findById(blogId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+    public BlogResponse get(Long blogId) {
+        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+        return BlogResponse.of(blog);
+
     }
 }

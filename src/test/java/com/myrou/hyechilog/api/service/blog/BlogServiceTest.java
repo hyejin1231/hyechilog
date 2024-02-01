@@ -3,6 +3,7 @@ package com.myrou.hyechilog.api.service.blog;
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
+import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,7 @@ class BlogServiceTest {
                 .build();
 
         // when
-        Blog blog = blogService.write(request);
+        BlogResponse blog = blogService.write(request);
 
         // then
         assertThat(blog)
@@ -62,10 +63,10 @@ class BlogServiceTest {
                 .content("World!")
                 .build();
 
-        Blog givenBlog = blogService.write(request);
+        BlogResponse givenBlog = blogService.write(request);
 
         // when
-        Blog whenBlog = blogService.get(givenBlog.getId());
+        BlogResponse whenBlog = blogService.get(givenBlog.getId());
 
         // then
         assertThat(whenBlog.getTitle()).isEqualTo(givenBlog.getTitle());

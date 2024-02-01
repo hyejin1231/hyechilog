@@ -5,6 +5,7 @@ import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
 import com.myrou.hyechilog.api.service.blog.BlogService;
+import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -146,7 +147,7 @@ class BlogControllerTest {
                 .content("내용입니다.!!")
                 .build();
 
-        Blog givenBlog = blogService.write(request);
+        BlogResponse givenBlog = blogService.write(request);
 
         // then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/blogs/{blogId}", givenBlog.getId())
