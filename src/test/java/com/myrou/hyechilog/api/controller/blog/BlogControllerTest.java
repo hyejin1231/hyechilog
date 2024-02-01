@@ -7,6 +7,7 @@ import com.myrou.hyechilog.api.repository.blog.BlogRepository;
 import com.myrou.hyechilog.api.service.blog.BlogService;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import org.assertj.core.api.Assertions;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -155,6 +156,43 @@ class BlogControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value(givenBlog.getTitle()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value(givenBlog.getContent()))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("게시글 3개 작성 후 전체 조회를 하면 글 3개가 조회된다.")
+    void getList() throws Exception {
+        // given
+        BlogCreateRequest request1= BlogCreateRequest.builder()
+                .title("제목입니다11")
+                .content("내용입니다.11")
+                .build();
+        BlogCreateRequest request2 = BlogCreateRequest.builder()
+                .title("제목입니다22")
+                .content("내용입니다.22")
+                .build();
+        BlogCreateRequest request3 = BlogCreateRequest.builder()
+                .title("제목입니다33")
+                .content("내용입니다.33")
+                .build();
+        blogService.write(request1);
+        blogService.write(request2);
+        blogService.write(request3);
+
+
+        //then
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/blogs"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.length()", Matchers.is(3)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].title").value("제목입니다11"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].content").value("내용입니다.11"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[1].id").value(2L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[1].title").value("제목입니다22"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[1].content").value("내용입니다.22"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[2].id").value(3L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[2].title").value("제목입니다33"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[2].content").value("내용입니다.33"))
                 .andDo(MockMvcResultHandlers.print());
     }
 }

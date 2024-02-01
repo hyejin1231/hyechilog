@@ -73,4 +73,37 @@ class BlogServiceTest {
         assertThat(whenBlog.getContent()).isEqualTo(givenBlog.getContent());
     }
 
+    @Test
+    @DisplayName("글을 3개 저장하고 모든 글을 조회하면 3개의 글이 조회된다.")
+    void getList() {
+        // given
+        BlogCreateRequest request1 = BlogCreateRequest.builder()
+                .title("Hello1")
+                .content("World!")
+                .build();
+        BlogCreateRequest request2 = BlogCreateRequest.builder()
+                .title("Hello2")
+                .content("World!")
+                .build();
+        BlogCreateRequest request3 = BlogCreateRequest.builder()
+                .title("Hello3")
+                .content("World!")
+                .build();
+        blogService.write(request1);
+        blogService.write(request2);
+        blogService.write(request3);
+
+        // when
+        List<BlogResponse> blogs = blogService.getList();
+
+        // then
+        assertThat(blogs).hasSize(3)
+                .extracting("title", "content")
+                .containsExactlyInAnyOrder(
+                        new Tuple("Hello1", "World!"),
+                        new Tuple("Hello2", "World!"),
+                        new Tuple("Hello3", "World!")
+                );
+    }
+
 }

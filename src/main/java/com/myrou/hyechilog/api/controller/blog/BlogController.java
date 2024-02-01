@@ -94,5 +94,14 @@ public class BlogController {
       return ApiResponse.ok(blogService.get(blogId));
     }
 
+    /**
+     * 게시글 여러개 조회
+     * @return
+     */
+    @GetMapping("/blogs")
+    public ApiResponse getList() {
+        return ApiResponse.ok(blogService.getList());
+    }
+
 
 }
