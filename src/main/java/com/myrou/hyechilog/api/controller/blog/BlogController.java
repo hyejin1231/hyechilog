@@ -98,9 +98,19 @@ public class BlogController {
      * 게시글 여러개 조회
      * @return
      */
-    @GetMapping("/blogs")
+    @GetMapping("/old/blogs")
     public ApiResponse getList() {
         return ApiResponse.ok(blogService.getList());
+    }
+
+    /**
+     * 게시글 페이징 조회
+     * @param page : 현재 페이지
+     * @return
+     */
+    @GetMapping("/blogs")
+    public ApiResponse getListWithPaging(@RequestParam(value = "page") int page) {
+        return ApiResponse.ok(blogService.getListWithPaging(page));
     }
 
 

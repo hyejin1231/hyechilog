@@ -23,6 +23,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.*;
 
@@ -181,7 +185,7 @@ class BlogControllerTest {
 
 
         //then
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/blogs"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/old/blogs"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.length()", Matchers.is(3)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].id").value(1L))
@@ -193,6 +197,25 @@ class BlogControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.[2].id").value(3L))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.[2].title").value("제목입니다33"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.[2].content").value("내용입니다.33"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("게시글 30개 작성 후 첫번째 페이지 조회하면 10개의 글이 조회된다.")
+    void getListWithPaging() throws Exception {
+        // given
+        List<BlogCreateRequest> blogCreateRequests = IntStream.range(1, 31)
+                .mapToObj(i -> BlogCreateRequest.builder().title("제목 [" + i + "]").content("내용 " + i).build())
+                .collect(Collectors.toList());
+        blogService.writes(blogCreateRequests);
+
+
+        //then
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/blogs?page=1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.length()", Matchers.is(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].title").value("제목 [30]"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[9].title").value("제목 [21]"))
                 .andDo(MockMvcResultHandlers.print());
     }
 }

@@ -23,7 +23,7 @@ public class BlogCreateRequest {
         this.content = content;
     }
 
-    public Blog toEntity(BlogCreateRequest request) {
+    public static Blog toEntity(BlogCreateRequest request) {
         return Blog.builder()
                 .title(request.getTitle())
                 .content(request.getContent())

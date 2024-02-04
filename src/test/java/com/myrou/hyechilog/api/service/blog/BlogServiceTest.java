@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,6 +54,18 @@ class BlogServiceTest {
                 .containsExactlyInAnyOrder(
                         new Tuple("테스트 제목", "테스트 내용")
                 );
+    }
+
+    @Test
+    @DisplayName("글을 10개 한번에 작성후, 저장하면 10개 다 저장된다.")
+    void writes() {
+        List<BlogCreateRequest> blogCreateRequests = IntStream.range(1, 11)
+                .mapToObj(i -> BlogCreateRequest.builder().title("제목 [" + i + "]").content("내용 [" + i + "]").build())
+                .collect(Collectors.toList());
+
+        List<BlogResponse> blogResponses = blogService.writes(blogCreateRequests);
+
+        assertThat(blogResponses).hasSize(10);
     }
 
     @Test
@@ -104,6 +118,25 @@ class BlogServiceTest {
                         new Tuple("Hello2", "World!"),
                         new Tuple("Hello3", "World!")
                 );
+    }
+
+    @Test
+    @DisplayName("글을 30개 저장하고 첫 페이지를 조회하면 10개의 페이지가 조회된다.")
+    void getListWithPaging() {
+        // given
+        List<Blog> blogCreateRequests = IntStream.range(1, 31)
+                .mapToObj(i -> Blog.builder().title("제목 [" + i + "]").content("내용 " + i).build())
+                .collect(Collectors.toList());
+        blogRepository.saveAll(blogCreateRequests);
+
+        // when
+        List<BlogResponse> blogs = blogService.getListWithPaging(1);
+
+        // then
+        assertThat(blogs).hasSize(10);
+        for (BlogResponse blog : blogs) {
+            System.out.println("blog title : " + blog.getTitle() + ", content : " + blog.getContent());
+        }
     }
 
 }
