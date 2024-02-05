@@ -1,6 +1,7 @@
 package com.myrou.hyechilog.api.service.blog;
 
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
+import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
@@ -47,4 +48,9 @@ public class BlogService {
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.DESC, "id"));
         return blogRepository.findAll(pageable).stream().map(BlogResponse::of).collect(Collectors.toList());
     }
+
+    public List<BlogResponse> getListWithQueryDsl(PageSearch pageSearch) {
+        return blogRepository.getList(pageSearch).stream().map(BlogResponse::of).collect(Collectors.toList());
+    }
+
 }

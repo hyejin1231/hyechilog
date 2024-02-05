@@ -1,6 +1,7 @@
 package com.myrou.hyechilog.api.service.blog;
 
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
+import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
@@ -131,6 +132,27 @@ class BlogServiceTest {
 
         // when
         List<BlogResponse> blogs = blogService.getListWithPaging(1);
+
+        // then
+        assertThat(blogs).hasSize(10);
+        for (BlogResponse blog : blogs) {
+            System.out.println("blog title : " + blog.getTitle() + ", content : " + blog.getContent());
+        }
+    }
+
+    @Test
+    @DisplayName("글을 30개 저장하고 첫 페이지를 조회하면 10개의 페이지가 조회된다.")
+    void getListWithQueryDsl() {
+        // given
+        List<Blog> blogCreateRequests = IntStream.range(1, 31)
+                .mapToObj(i -> Blog.builder().title("제목 [" + i + "]").content("내용 " + i).build())
+                .collect(Collectors.toList());
+        blogRepository.saveAll(blogCreateRequests);
+
+        PageSearch pageSearch = PageSearch.builder().page(0).size(10).build();
+
+        // when
+        List<BlogResponse> blogs = blogService.getListWithQueryDsl(pageSearch);
 
         // then
         assertThat(blogs).hasSize(10);

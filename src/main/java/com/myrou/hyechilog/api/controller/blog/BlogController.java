@@ -1,6 +1,7 @@
 package com.myrou.hyechilog.api.controller.blog;
 
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
+import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.service.blog.BlogService;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
@@ -108,9 +109,19 @@ public class BlogController {
      * @param page : 현재 페이지
      * @return
      */
-    @GetMapping("/blogs")
+    @GetMapping("/old/paging/blogs")
     public ApiResponse getListWithPaging(@RequestParam(value = "page") int page) {
         return ApiResponse.ok(blogService.getListWithPaging(page));
+    }
+
+    /**
+     * 게시글 페이징 조회 with QueryDls
+     * @param pageSearch
+     * @return
+     */
+    @GetMapping("/blogs")
+    public ApiResponse getListWithQueryDsl(@ModelAttribute PageSearch pageSearch) {
+        return ApiResponse.ok(blogService.getListWithQueryDsl(pageSearch));
     }
 
 
