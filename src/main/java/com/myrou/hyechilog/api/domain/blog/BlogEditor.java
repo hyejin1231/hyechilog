@@ -3,6 +3,9 @@ package com.myrou.hyechilog.api.domain.blog;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * BlogE
+ */
 @Getter
 public class BlogEditor
 {
