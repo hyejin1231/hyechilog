@@ -26,4 +26,17 @@ public class Blog {
         this.title = title;
         this.content = content;
     }
+    
+    public BlogEditor.BlogEditorBuilder toEditor()
+    {
+        return BlogEditor.builder()
+                .title(title)
+                .content(content);
+    }
+    
+    public void edit(BlogEditor blogEditor)
+    {
+        this.title = blogEditor.getTitle();
+        this.content = blogEditor.getContent();
+    }
 }

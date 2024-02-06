@@ -1,6 +1,7 @@
 package com.myrou.hyechilog.api.controller.blog;
 
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
+import com.myrou.hyechilog.api.controller.blog.request.BlogEdit;
 import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.service.blog.BlogService;
@@ -122,6 +123,12 @@ public class BlogController {
     @GetMapping("/blogs")
     public ApiResponse getListWithQueryDsl(@ModelAttribute PageSearch pageSearch) {
         return ApiResponse.ok(blogService.getListWithQueryDsl(pageSearch));
+    }
+    
+    @PatchMapping("/blogs/{blogId}")
+    public ApiResponse editBlog(@PathVariable long blogId, @RequestBody BlogEdit blogEdit)
+    {
+        return ApiResponse.ok(blogService.edit(blogId, blogEdit));
     }
 
 

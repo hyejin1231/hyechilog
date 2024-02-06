@@ -1,8 +1,10 @@
 package com.myrou.hyechilog.api.service.blog;
 
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
+import com.myrou.hyechilog.api.controller.blog.request.BlogEdit;
 import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.domain.blog.Blog;
+import com.myrou.hyechilog.api.domain.blog.BlogEditor;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +53,18 @@ public class BlogService {
 
     public List<BlogResponse> getListWithQueryDsl(PageSearch pageSearch) {
         return blogRepository.getList(pageSearch).stream().map(BlogResponse::of).collect(Collectors.toList());
+    }
+    
+    public BlogResponse edit(long blogId, BlogEdit blogEdit)
+    {
+        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+        
+        BlogEditor.BlogEditorBuilder blogEditor = blog.toEditor();
+        BlogEditor editor = blogEditor.title(blogEdit.getTitle()).content(blogEdit.getContent()).build();
+        
+        blog.edit(editor);
+        
+        return BlogResponse.of(blog);
     }
 
 }

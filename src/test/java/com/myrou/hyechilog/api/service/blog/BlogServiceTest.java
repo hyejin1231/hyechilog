@@ -1,6 +1,7 @@
 package com.myrou.hyechilog.api.service.blog;
 
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
+import com.myrou.hyechilog.api.controller.blog.request.BlogEdit;
 import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
@@ -159,6 +160,27 @@ class BlogServiceTest {
         for (BlogResponse blog : blogs) {
             System.out.println("blog title : " + blog.getTitle() + ", content : " + blog.getContent());
         }
+    }
+    
+    @Test
+    @DisplayName("글 1개를 저장한 뒤 아이디를 가져와 해당 글을 수정하면 수정된 글을 반환한다.")
+    void editBlog()
+    {
+        // given
+        BlogCreateRequest request = BlogCreateRequest.builder()
+                                                        .title("글 제목")
+                                                        .content("글 내용").build();
+        
+        BlogResponse response = blogService.write(request);
+        
+        BlogEdit blogEdit = BlogEdit.builder().title("글 제목 수정").content("글 내용").build();
+        
+        // when
+        BlogResponse editResult = blogService.edit(response.getId(), blogEdit);
+        
+        // then
+        assertThat(editResult.getTitle()).isEqualTo("글 제목 수정");
+        assertThat(editResult.getContent()).isEqualTo("글 내용");
     }
 
 }

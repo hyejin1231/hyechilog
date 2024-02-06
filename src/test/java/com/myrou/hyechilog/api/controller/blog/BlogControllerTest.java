@@ -1,7 +1,9 @@
 package com.myrou.hyechilog.api.controller.blog;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
+import com.myrou.hyechilog.api.controller.blog.request.BlogEdit;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
 import com.myrou.hyechilog.api.service.blog.BlogService;
@@ -235,6 +237,30 @@ class BlogControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.length()", Matchers.is(10)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].title").value("제목 [30]"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.[9].title").value("제목 [21]"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+    
+    
+    @DisplayName("글 1개를 저장하고 글 제목을 수정하면 수정한 블로그 글을 조회할 수 있다.")
+    @Test
+    void editBlog() throws Exception
+    {
+        // given
+        BlogCreateRequest request = BlogCreateRequest.builder()
+                .title("글 제목")
+                .content("글 내용").build();
+        
+        BlogResponse response = blogService.write(request);
+        
+        BlogEdit blogEdit = BlogEdit.builder().title("글 제목 수정").content("글 내용").build();
+        
+        // when then
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1//blogs/{blogId}", response.getId())
+                                .contentType(APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(blogEdit)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value("글 제목 수정"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value("글 내용"))
                 .andDo(MockMvcResultHandlers.print());
     }
 }
