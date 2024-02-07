@@ -59,7 +59,13 @@ public class BlogService {
     {
         Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
         
+        // 1. 먼저 수정전 blog 글을 BlogEditorBuilder 에 값 세팅해준다.
         BlogEditor.BlogEditorBuilder blogEditor = blog.toEditor();
+        
+        // 2. 다음 이제 수정할 값이 들어있는 BlogEdit 값을 받아서 builder 에 값을 변경해준다.
+        // 2-1. 이때 클라이언트에서 수정할 내용만 전달한다하면 제목 또는 내용 중에 null 값이 들어갈 수 있다.
+        // 2-2. 이 문제를 해결하기 위해서 Builder를 lombok을 통해 사용하는 것이 아닌 직접 구현하는 걸로 해서 title(), content() 메서드 각각 호출할 때
+        // blogEdit의 title, content의 null 값을 확인한 다음에 세팅하도록 한다. null 이면 기존 값 유지
         BlogEditor editor = blogEditor.title(blogEdit.getTitle()).content(blogEdit.getContent()).build();
         
         blog.edit(editor);

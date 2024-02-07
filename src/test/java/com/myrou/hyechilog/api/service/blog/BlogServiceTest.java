@@ -182,5 +182,26 @@ class BlogServiceTest {
         assertThat(editResult.getTitle()).isEqualTo("글 제목 수정");
         assertThat(editResult.getContent()).isEqualTo("글 내용");
     }
+    
+    @Test
+    @DisplayName("글 1개를 저장한 뒤 아이디를 가져와 해당 글의 내용만 수정하면 내용만 수정된다.")
+    void editBlogWhenTitleIsNull()
+    {
+        // given
+        BlogCreateRequest request = BlogCreateRequest.builder()
+                .title("글 제목")
+                .content("글 내용").build();
+        
+        BlogResponse response = blogService.write(request);
+        
+        BlogEdit blogEdit = BlogEdit.builder().content("글 내용 수정~ ").build();
+        
+        // when
+        BlogResponse editResult = blogService.edit(response.getId(), blogEdit);
+        
+        // then
+        assertThat(editResult.getTitle()).isEqualTo("글 제목");
+        assertThat(editResult.getContent()).isEqualTo("글 내용 수정~ ");
+    }
 
 }
