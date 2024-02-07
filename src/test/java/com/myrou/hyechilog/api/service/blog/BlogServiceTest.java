@@ -203,5 +203,20 @@ class BlogServiceTest {
         assertThat(editResult.getTitle()).isEqualTo("글 제목");
         assertThat(editResult.getContent()).isEqualTo("글 내용 수정~ ");
     }
+    
+    
+    @DisplayName("게시글 1개를 작성해 저장한 다음 해당 글을 삭제하면 게시글 수가 0개이다.")
+    @Test
+    void delete() {
+        // given
+        Blog blog = Blog.builder().title("게시글 제목").content("게시글 내용").build();
+        blogRepository.save(blog);
+        
+        // when
+        blogService.delete(blog.getId());
+        
+        // then
+        assertThat(blogRepository.count()).isZero();
+    }
 
 }

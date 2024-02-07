@@ -78,7 +78,7 @@ public class BlogController {
      * @return
      */
     @PostMapping("/blogs/new")
-    public ApiResponse create(@RequestBody @Valid BlogCreateRequest request) {
+    public ApiResponse<BlogResponse> create(@RequestBody @Valid BlogCreateRequest request) {
         log.info("request={}", request);
 
         BlogResponse blog = blogService.write(request);
@@ -92,7 +92,7 @@ public class BlogController {
      * @return
      */
     @GetMapping("/blogs/{blogId}")
-    public ApiResponse get(@PathVariable(value = "blogId") Long blogId) {
+    public ApiResponse<BlogResponse> get(@PathVariable(value = "blogId") Long blogId) {
       return ApiResponse.ok(blogService.get(blogId));
     }
 
@@ -101,7 +101,7 @@ public class BlogController {
      * @return
      */
     @GetMapping("/old/blogs")
-    public ApiResponse getList() {
+    public ApiResponse<List<BlogResponse>> getList() {
         return ApiResponse.ok(blogService.getList());
     }
 
@@ -111,7 +111,7 @@ public class BlogController {
      * @return
      */
     @GetMapping("/old/paging/blogs")
-    public ApiResponse getListWithPaging(@RequestParam(value = "page") int page) {
+    public ApiResponse<List<BlogResponse>> getListWithPaging(@RequestParam(value = "page") int page) {
         return ApiResponse.ok(blogService.getListWithPaging(page));
     }
 
@@ -121,15 +121,20 @@ public class BlogController {
      * @return
      */
     @GetMapping("/blogs")
-    public ApiResponse getListWithQueryDsl(@ModelAttribute PageSearch pageSearch) {
+    public ApiResponse<List<BlogResponse>> getListWithQueryDsl(@ModelAttribute PageSearch pageSearch) {
         return ApiResponse.ok(blogService.getListWithQueryDsl(pageSearch));
     }
     
     @PatchMapping("/blogs/{blogId}")
-    public ApiResponse editBlog(@PathVariable long blogId, @RequestBody BlogEdit blogEdit)
+    public ApiResponse<BlogResponse> editBlog(@PathVariable long blogId, @RequestBody BlogEdit blogEdit)
     {
         return ApiResponse.ok(blogService.edit(blogId, blogEdit));
     }
-
-
+    
+    @DeleteMapping("/blogs/{blogId}")
+    public ApiResponse deleteBlog(@PathVariable long blogId)
+    {
+        blogService.delete(blogId);
+        return ApiResponse.ok(null); // null 보내는게 맞나...?
+    }
 }

@@ -72,5 +72,12 @@ public class BlogService {
         
         return BlogResponse.of(blog);
     }
-
+    
+    public void delete(Long blogId)
+    {
+        Blog blog = blogRepository.findById(blogId).orElseThrow(
+                () -> new IllegalArgumentException("해당 글이 존재하지 않습니다."));
+        
+        blogRepository.delete(blog);
+    }
 }

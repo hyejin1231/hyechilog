@@ -255,12 +255,31 @@ class BlogControllerTest {
         BlogEdit blogEdit = BlogEdit.builder().title("글 제목 수정").content("글 내용").build();
         
         // when then
-        mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1//blogs/{blogId}", response.getId())
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/blogs/{blogId}", response.getId())
                                 .contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(blogEdit)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value("글 제목 수정"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value("글 내용"))
                 .andDo(MockMvcResultHandlers.print());
+    }
+    
+    
+    @DisplayName("게시글 1개를 작성 후 삭제하면 해당 글이 삭제된다.")
+    @Test
+    void delete() throws Exception
+    {
+        // given
+        BlogCreateRequest request = BlogCreateRequest.builder().title("게시글 제목")
+                .content("게시글 내용").build();
+        
+        BlogResponse response = blogService.write(request);
+        
+        // when then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/blogs/{blogId}", response.getId())
+                                .contentType(APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+         
     }
 }
