@@ -4,6 +4,7 @@ import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
 import com.myrou.hyechilog.api.controller.blog.request.BlogEdit;
 import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.domain.blog.Blog;
+import com.myrou.hyechilog.api.exception.BlogNotFound;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import org.assertj.core.api.Assertions;
@@ -87,6 +88,14 @@ class BlogServiceTest {
         // then
         assertThat(whenBlog.getTitle()).isEqualTo(givenBlog.getTitle());
         assertThat(whenBlog.getContent()).isEqualTo(givenBlog.getContent());
+    }
+    
+    
+    @DisplayName("없는 게시글 조회했을 때는 '해당 글이 존재하지 않습니다.' 오류가 발생함.")
+    @Test
+    void getWhenNoBlog() {
+        assertThatThrownBy(() -> blogService.get(2L)).isInstanceOf(
+                BlogNotFound.class).hasMessage("해당 글이 존재하지 않습니다.");
     }
 
     @Test
@@ -183,6 +192,25 @@ class BlogServiceTest {
         assertThat(editResult.getContent()).isEqualTo("글 내용");
     }
     
+    
+    @DisplayName("게시글을 수정하려고 하는데 해당 블로그 id가 존재하지 않을 때 '해당 글이 존재하지 않습니다.' 오류가 발생함.")
+    @Test
+    void editWhenNoBlogId() {
+        // given
+        BlogCreateRequest request = BlogCreateRequest.builder()
+                .title("글 제목")
+                .content("글 내용").build();
+        
+        BlogResponse response = blogService.write(request);
+        
+        BlogEdit blogEdit = BlogEdit.builder().title("글 제목 수정").content("글 내용").build();
+        
+        // when then
+        assertThatThrownBy(
+                () -> blogService.edit(response.getId() + 1, blogEdit)).isInstanceOf(
+                BlogNotFound.class).hasMessage("해당 글이 존재하지 않습니다.");
+    }
+    
     @Test
     @DisplayName("글 1개를 저장한 뒤 아이디를 가져와 해당 글의 내용만 수정하면 내용만 수정된다.")
     void editBlogWhenTitleIsNull()
@@ -217,6 +245,15 @@ class BlogServiceTest {
         
         // then
         assertThat(blogRepository.count()).isZero();
+    }
+    
+    
+    @DisplayName("존재하지 않는 게시글을 삭제하려고 하면 해당 글이 존재하지 않습니다. 라는 오류 메시지가 출력된다.")
+    @Test
+    void deleteNoBlog() {
+        assertThatThrownBy(() -> blogService.delete(2L))
+                .isInstanceOf(BlogNotFound.class)
+                .hasMessage("해당 글이 존재하지 않습니다.");
     }
 
 }

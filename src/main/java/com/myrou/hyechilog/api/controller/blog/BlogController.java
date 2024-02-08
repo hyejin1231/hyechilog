@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO : 인증, 예외 처리...
+// 인증 : 지금은 누구나 API 정보를 알면 CRUD가 다 가능하다. 자기 글만 삭제하는게 맞으니까!! 인증이 추가 되어야 한다.
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -125,12 +127,23 @@ public class BlogController {
         return ApiResponse.ok(blogService.getListWithQueryDsl(pageSearch));
     }
     
+    /**
+     * 게시글 수정
+     * @param blogId
+     * @param blogEdit : 블로그 수정만 담은 vo
+     * @return
+     */
     @PatchMapping("/blogs/{blogId}")
     public ApiResponse<BlogResponse> editBlog(@PathVariable long blogId, @RequestBody BlogEdit blogEdit)
     {
         return ApiResponse.ok(blogService.edit(blogId, blogEdit));
     }
     
+    /**
+     * 게시글 삭제
+     * @param blogId
+     * @return
+     */
     @DeleteMapping("/blogs/{blogId}")
     public ApiResponse deleteBlog(@PathVariable long blogId)
     {

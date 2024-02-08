@@ -5,6 +5,7 @@ import com.myrou.hyechilog.api.controller.blog.request.BlogEdit;
 import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.domain.blog.BlogEditor;
+import com.myrou.hyechilog.api.exception.BlogNotFound;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class BlogService {
     private final BlogRepository blogRepository;
 
     public BlogResponse write(BlogCreateRequest blogCreateRequest) {
-        Blog blog = blogCreateRequest.toEntity(blogCreateRequest);
+        Blog blog = BlogCreateRequest.toEntity(blogCreateRequest);
         return BlogResponse.of(blogRepository.save(blog));
     }
 
@@ -36,7 +37,8 @@ public class BlogService {
     }
 
     public BlogResponse get(Long blogId) {
-        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+//        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+        Blog blog = blogRepository.findById(blogId).orElseThrow(BlogNotFound::new);
 
         return BlogResponse.of(blog);
 
@@ -57,7 +59,8 @@ public class BlogService {
     
     public BlogResponse edit(long blogId, BlogEdit blogEdit)
     {
-        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+//        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+        Blog blog = blogRepository.findById(blogId).orElseThrow(BlogNotFound::new);
         
         // 1. 먼저 수정전 blog 글을 BlogEditorBuilder 에 값 세팅해준다.
         BlogEditor.BlogEditorBuilder blogEditor = blog.toEditor();
@@ -75,8 +78,8 @@ public class BlogService {
     
     public void delete(Long blogId)
     {
-        Blog blog = blogRepository.findById(blogId).orElseThrow(
-                () -> new IllegalArgumentException("해당 글이 존재하지 않습니다."));
+//        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new IllegalArgumentException("해당 글이 존재하지 않습니다."));
+        Blog blog = blogRepository.findById(blogId).orElseThrow(BlogNotFound::new);
         
         blogRepository.delete(blog);
     }
