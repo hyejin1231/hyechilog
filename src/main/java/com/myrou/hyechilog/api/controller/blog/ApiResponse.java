@@ -1,10 +1,12 @@
 package com.myrou.hyechilog.api.controller.blog;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ApiResponse<T> {
     private int code;
     private HttpStatus status;

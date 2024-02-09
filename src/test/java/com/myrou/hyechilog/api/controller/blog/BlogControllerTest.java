@@ -282,4 +282,35 @@ class BlogControllerTest {
                 .andDo(MockMvcResultHandlers.print());
          
     }
+
+    @Test
+    @DisplayName("존재하지 않는 글을 조회하면 예외가 발생한다.")
+    void getNoBlog() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/blogs/{blogId}",1L)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 글을 수정하면 예외가 발생한다.")
+    void editNoBlog() throws Exception {
+        BlogEdit blogEdit = BlogEdit.builder().title("글 제목 수정").content("글 내용").build();
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/blogs/{blogId}",1L)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(blogEdit)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 글을 삭제하면 예외가 발생한다.")
+    void deleteNoBlog() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/blogs/{blogId}",1L)
+                        .contentType(APPLICATION_JSON)
+                        )
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
 }
