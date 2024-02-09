@@ -10,6 +10,7 @@ import com.myrou.hyechilog.api.service.blog.BlogService;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -24,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +46,14 @@ class BlogControllerTest {
 
     @Autowired
     private BlogService blogService;
+
+    @Autowired
+    private BlogRepository blogRepository;
+
+    @BeforeEach
+    void setUp() {
+        blogRepository.deleteAll();
+    }
 
     @DisplayName("게시글 등록을 요청하면 create Blog Content가 출력된다.")
     @Test
@@ -145,6 +155,24 @@ class BlogControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @DisplayName("게시글 등록할 때 제목에 '바보'가 포함되면 예외가 발생한다.")
+    @Test
+    void NotCreateWhenTitleContainsWord() throws Exception {
+        // given
+        BlogCreateRequest request = BlogCreateRequest.builder()
+                .title("바보의 제목입니다!!")
+                .content("내용입니다.!!")
+                .build();
+
+        // when
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/v1/blogs/new")
+                                .contentType(APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request))
+                ).andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
     @Test
     @DisplayName("게시글 작성 후 해당 id 값으로 조회하면 작성한 글을 조회한다.")
     void get() throws Exception {
@@ -181,22 +209,22 @@ class BlogControllerTest {
                 .title("제목입니다33")
                 .content("내용입니다.33")
                 .build();
-        blogService.write(request1);
-        blogService.write(request2);
-        blogService.write(request3);
+        BlogResponse response1 = blogService.write(request1);
+        BlogResponse response2 = blogService.write(request2);
+        BlogResponse response3 = blogService.write(request3);
 
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/old/blogs"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.length()", Matchers.is(3)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].id").value(response1.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].title").value("제목입니다11"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].content").value("내용입니다.11"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[1].id").value(2L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[1].id").value(response2.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.[1].title").value("제목입니다22"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.[1].content").value("내용입니다.22"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[2].id").value(3L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.[2].id").value(response3.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.[2].title").value("제목입니다33"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.[2].content").value("내용입니다.33"))
                 .andDo(MockMvcResultHandlers.print());

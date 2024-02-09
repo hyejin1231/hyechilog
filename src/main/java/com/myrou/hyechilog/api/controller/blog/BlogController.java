@@ -81,10 +81,8 @@ public class BlogController {
      */
     @PostMapping("/blogs/new")
     public ApiResponse<BlogResponse> create(@RequestBody @Valid BlogCreateRequest request) {
-        log.info("request={}", request);
-
+        request.validate();
         BlogResponse blog = blogService.write(request);
-
         return ApiResponse.ok(blog);
     }
 

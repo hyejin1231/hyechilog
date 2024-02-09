@@ -1,6 +1,7 @@
 package com.myrou.hyechilog.api.controller.blog.request;
 
 import com.myrou.hyechilog.api.domain.blog.Blog;
+import com.myrou.hyechilog.api.exception.InvalidRequest;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,5 +29,11 @@ public class BlogCreateRequest {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .build();
+    }
+
+    public void validate() {
+        if (title.contains("바보")) {
+            throw new InvalidRequest("title", "제목에 '바보'를 포함할 수 없습니다.");
+        }
     }
 }

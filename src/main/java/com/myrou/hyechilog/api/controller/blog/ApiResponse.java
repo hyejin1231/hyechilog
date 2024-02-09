@@ -6,7 +6,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+//@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ApiResponse<T> {
     private int code;
     private HttpStatus status;
