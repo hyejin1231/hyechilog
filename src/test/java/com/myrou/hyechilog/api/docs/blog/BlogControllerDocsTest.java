@@ -1,12 +1,9 @@
 package com.myrou.hyechilog.api.docs.blog;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
-import com.myrou.hyechilog.api.repository.blog.BlogRepository;
 import com.myrou.hyechilog.api.service.blog.BlogService;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,23 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.request.RequestDocumentation;
+import org.springframework.restdocs.snippet.Attributes;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.http.MediaType.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -70,7 +62,7 @@ public class BlogControllerDocsTest {
                         accept(APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
-                .andDo(MockMvcRestDocumentation.document("index",
+                .andDo(MockMvcRestDocumentation.document("blog-inquiry",
                         RequestDocumentation.pathParameters(
                                 RequestDocumentation.parameterWithName("blogId").description("게시글 Id")
                         ),
@@ -97,10 +89,10 @@ public class BlogControllerDocsTest {
                 .contentType(APPLICATION_JSON).content(objectMapper.writeValueAsString(request))
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
-                .andDo(MockMvcRestDocumentation.document("index",
+                .andDo(MockMvcRestDocumentation.document("blog-create",
                                 PayloadDocumentation.requestFields(
-                                        PayloadDocumentation.fieldWithPath("title").description("게시글 제목"),
-                                        PayloadDocumentation.fieldWithPath("content").description("게시글 내용")
+                                        PayloadDocumentation.fieldWithPath("title").type(JsonFieldType.STRING).description("게시글 제목").attributes(Attributes.key("constraint").value("제목에는 '비보' 가 포함될 수 없습니다.")),
+                                        PayloadDocumentation.fieldWithPath("content").type(JsonFieldType.STRING).description("게시글 내용").optional()
                                 ),
                                 PayloadDocumentation.responseFields(
                                         PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),

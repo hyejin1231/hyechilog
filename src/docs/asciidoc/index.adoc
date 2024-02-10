@@ -1,20 +1,37 @@
 = Hyechilog API
-:toc:
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
 
 == 글 단건 조회
 
 === 요청
 
-include::{snippets}/index/http-request.adoc[]
+include::{snippets}/blog-inquiry/http-request.adoc[]
 
-include::{snippets}/index/path-parameters.adoc[]
+include::{snippets}/blog-inquiry/path-parameters.adoc[]
 
 === 응답
 
-include::{snippets}/index/http-response.adoc[]
+include::{snippets}/blog-inquiry/http-response.adoc[]
 
-include::{snippets}/index/response-fields.adoc[]
+include::{snippets}/blog-inquiry/response-fields.adoc[]
 
-=== CURL
+== 글 작성
 
-include::{snippets}/index/curl-request.adoc[]
+=== 요청
+
+include::{snippets}/blog-create/http-request.adoc[]
+
+include::{snippets}/blog-create/request-fields.adoc[]
+
+=== 응답
+
+include::{snippets}/blog-create/http-response.adoc[]
+
+include::{snippets}/blog-create/response-fields.adoc[]
+
+
