@@ -468,6 +468,25 @@ Accept: application/json
 Host: localhost:8080</code></pre>
 </div>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/v1/blogs/{blogId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>blogId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시글 Id</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_응답">응답</h3>
@@ -478,6 +497,11 @@ Content-Type: application/json
 Content-Length: 111
 
 {"code":200,"status":"OK","message":"OK","data":{"id":68,"title":"Hyechii Blog Test","content":"Blog Content"}}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-json" data-lang="json">{"code":200,"status":"OK","message":"OK","data":{"id":68,"title":"Hyechii Blog Test","content":"Blog Content"}}</code></pre>
 </div>
 </div>
 </div>
@@ -496,7 +520,7 @@ Content-Length: 111
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-02-10 09:49:22 +0900
+Last updated 2024-02-10 11:16:23 +0900
 </div>
 </div>
 </body>

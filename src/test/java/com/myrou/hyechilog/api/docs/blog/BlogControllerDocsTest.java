@@ -14,6 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -49,11 +53,26 @@ public class BlogControllerDocsTest {
         BlogResponse response = blogService.write(request);
 
         // when then
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/blogs/{blogId}", response.getId()).
-                accept(APPLICATION_JSON))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/blogs/{blogId}", response.getId()).
+                        accept(APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
-                .andDo(MockMvcRestDocumentation.document("index"));
+                .andDo(MockMvcRestDocumentation.document("index",
+                        RequestDocumentation.pathParameters(
+                                RequestDocumentation.parameterWithName("blogId").description("게시글 Id")
+                        ),
+                        PayloadDocumentation.responseFields(
+                                PayloadDocumentation.fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                PayloadDocumentation.fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                                PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                                PayloadDocumentation.fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
+
+                                PayloadDocumentation.fieldWithPath("data.id").description("게시글 Id"),
+                                PayloadDocumentation.fieldWithPath("data.title").description("게시글 제목"),
+                                PayloadDocumentation.fieldWithPath("data.content").description("게시글 내용")
+                                )
+
+                ));
     }
 
 }
