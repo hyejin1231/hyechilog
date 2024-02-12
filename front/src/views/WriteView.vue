@@ -7,7 +7,7 @@
 
   const write = function () {
     console.log(title.value + " / " + content.value)
-    axios.post("http://localhost:8080/api/v1/blogs/new", {
+    axios.post("/my-backend/api/v1/blogs/new", {
       title:title.value, content: content.value
     })
   };
