@@ -1,14 +1,19 @@
 <script setup lang="ts">
   import {ref} from "vue";
   import axios from "axios";
+  import {useRouter} from "vue-router";
 
   const title = ref("")
   const content = ref("")
+
+  const  router = useRouter()
 
   const write = function () {
     console.log(title.value + " / " + content.value)
     axios.post("/my-backend/api/v1/blogs/new", {
       title:title.value, content: content.value
+    }).then(() => {
+      router.replace({name : "home"})
     })
   };
 
