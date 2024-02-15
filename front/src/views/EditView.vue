@@ -44,7 +44,9 @@
     </div>
 
     <div class="mt-2">
-      <el-button type="warning" @click="edit()">수정 완료!</el-button>
+      <div class="d-flex justify-content-end">
+        <el-button type="warning" @click="edit()">수정 완료!</el-button>
+      </div>
     </div>
   </div>
 </template>
