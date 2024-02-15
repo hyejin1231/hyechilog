@@ -8,6 +8,7 @@ import com.myrou.hyechilog.api.domain.blog.BlogEditor;
 import com.myrou.hyechilog.api.exception.BlogNotFound;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -56,7 +57,8 @@ public class BlogService {
     public List<BlogResponse> getListWithQueryDsl(PageSearch pageSearch) {
         return blogRepository.getList(pageSearch).stream().map(BlogResponse::of).collect(Collectors.toList());
     }
-    
+
+    @Transactional
     public BlogResponse edit(long blogId, BlogEdit blogEdit)
     {
 //        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
@@ -72,7 +74,7 @@ public class BlogService {
         BlogEditor editor = blogEditor.title(blogEdit.getTitle()).content(blogEdit.getContent()).build();
         
         blog.edit(editor);
-        
+
         return BlogResponse.of(blog);
     }
     

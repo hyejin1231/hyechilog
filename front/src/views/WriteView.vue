@@ -31,7 +31,7 @@
     </div>
 
     <div class="mt-2">
-      <el-button @click="write()">등록 완료!</el-button>
+      <el-button type="primary" @click="write()">등록 완료!</el-button>
     </div>
   </div>
 </template>
