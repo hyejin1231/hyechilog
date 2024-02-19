@@ -28,6 +28,24 @@ public class BlogController {
     private final BlogService blogService;
 
     /**
+     * 임시 : 인증 있어야 들어올 수 있는 페이지
+     * @return
+     */
+    @GetMapping("/test")
+    public String testPage() {
+        return "test";
+    }
+
+    /**
+     * 임시 : 인증 없이 들어올 수 있는 페이지
+     * @return
+     */
+    @GetMapping("/welcome")
+    public String welCome() {
+        return "welcome";
+    }
+
+    /**
      * Blog createV1 : 블로그 글 생성
      *
      * @param request
