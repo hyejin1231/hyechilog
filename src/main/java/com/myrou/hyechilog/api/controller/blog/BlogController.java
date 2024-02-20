@@ -3,7 +3,6 @@ package com.myrou.hyechilog.api.controller.blog;
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
 import com.myrou.hyechilog.api.controller.blog.request.BlogEdit;
 import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
-import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.service.blog.BlogService;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import com.myrou.hyechilog.config.data.UserSession;
@@ -31,12 +30,13 @@ public class BlogController {
 
     /**
      * 임시 : 인증 있어야 들어올 수 있는 페이지
+     *
      * @return
      */
     @GetMapping("/test")
-    public String testPage(UserSession userSession) {
-        log.info(">>> {}", userSession.getName());
-        return userSession.getName();
+    public Long testPage(UserSession userSession) {
+        log.info(">>> {}", userSession.getId());
+        return userSession.getId();
     }
 
     /**
