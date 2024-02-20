@@ -6,6 +6,8 @@ import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.service.blog.BlogService;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
+import com.myrou.hyechilog.config.data.UserSession;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +34,9 @@ public class BlogController {
      * @return
      */
     @GetMapping("/test")
-    public String testPage() {
-        return "test";
+    public String testPage(UserSession userSession) {
+        log.info(">>> {}", userSession.getName());
+        return userSession.getName();
     }
 
     /**

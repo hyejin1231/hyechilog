@@ -8,8 +8,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
+ * [2024.02.19]
  * API 인증을 위한 Interceptor 추가
+ * -> 우리 프로젝트에서 사용하지 않을 것이기 때문에 Deprecated
  */
+@Deprecated
 @Slf4j
 public class AuthInterceptor implements HandlerInterceptor {
     @Override
