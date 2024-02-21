@@ -22,6 +22,7 @@ import com.myrou.hyechilog.api.repository.user.UserRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// TODO. Controller 테스트할 때는 Mock 처리해서 해보기
 @AutoConfigureMockMvc
 @SpringBootTest
 class AuthControllerTest
@@ -60,8 +61,7 @@ class AuthControllerTest
 		// when
 		mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
 								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(
-										request)))
+								.content(objectMapper.writeValueAsString(request)))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andDo(MockMvcResultHandlers.print());
 	}

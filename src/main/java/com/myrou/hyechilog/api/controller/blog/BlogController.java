@@ -54,6 +54,7 @@ public class BlogController {
      * @param request
      * @return
      */
+    @Deprecated
     @PostMapping("/createV1")
     public String createV1(@RequestBody BlogCreateRequest request) {
         log.info("request={}", request);
@@ -75,6 +76,7 @@ public class BlogController {
      * @param result
      * @return
      */
+    @Deprecated
     @PostMapping("/createV2")
     public Map<String, String> createV2(@RequestBody @Valid BlogCreateRequest request, BindingResult result) {
         log.info("request={}", request);
