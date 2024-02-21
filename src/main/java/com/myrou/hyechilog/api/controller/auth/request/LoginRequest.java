@@ -1,6 +1,7 @@
 package com.myrou.hyechilog.api.controller.auth.request;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,4 +16,11 @@ public class LoginRequest
 	
 	@NotBlank(message = "비밀번호를 입력하세요.")
 	private String password;
+	
+	@Builder
+	public LoginRequest(String email, String password)
+	{
+		this.email = email;
+		this.password = password;
+	}
 }
