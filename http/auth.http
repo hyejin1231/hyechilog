@@ -6,3 +6,8 @@ Content-Type: application/json
   "email" : "hyechii@gmail.com",
   "password": "1231"
 }
+
+### 인증 페이지 요청
+GET http://localhost:8080/api/v1/test
+Content-Type: application/json
+Set-Cookie: SESSION=6e755f4e-802d-4a1a-bdd8-bb914c607325

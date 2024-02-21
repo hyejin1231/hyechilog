@@ -11,12 +11,16 @@ import com.myrou.hyechilog.api.exception.UnAuthorized;
 import com.myrou.hyechilog.api.repository.user.SessionRepository;
 import com.myrou.hyechilog.config.data.UserSession;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * [2024.02.20]
  * API 인증 : ArgumentResolver 이용하기
  */
+@Slf4j
 @RequiredArgsConstructor
 public class AuthResolver implements HandlerMethodArgumentResolver
 {
@@ -34,10 +38,25 @@ public class AuthResolver implements HandlerMethodArgumentResolver
 			WebDataBinderFactory binderFactory) throws Exception
 	{
 		// 2) 파라미터의 타입이 UserSession 이라면 해당 메서드 실행
+		/*
 		String accessToken = webRequest.getHeader("Authorization");
 		if (accessToken == null || accessToken.isEmpty()) {
 			throw new UnAuthorized();
 		}
+		 */
+		HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
+		if (servletRequest == null) {
+			log.info("servletRequest null");
+			throw new UnAuthorized();
+		}
+		
+		Cookie[] cookies = servletRequest.getCookies();
+		if (cookies.length == 0) {
+			log.info("no cookie");
+			throw new UnAuthorized();
+		}
+		
+		String accessToken = cookies[0].getValue();
 		
 		// 데이터베이스 사용자 확인 작업
 		Session session = sessionRepository.findByAccessToken(accessToken).orElseThrow(UnAuthorized::new);
