@@ -7,9 +7,15 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.myrou.hyechilog.api.repository.user.SessionRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
     
+    private final SessionRepository sessionRepository;
     /*
     v1. API 인증 : Interceptor 이용하기
     @Override
@@ -27,6 +33,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addArgumentResolvers(
             List<HandlerMethodArgumentResolver> resolvers)
     {
-        resolvers.add(new AuthResolver());
+        resolvers.add(new AuthResolver(sessionRepository));
     }
 }

@@ -6,16 +6,21 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import com.myrou.hyechilog.api.domain.blog.Session;
 import com.myrou.hyechilog.api.exception.UnAuthorized;
+import com.myrou.hyechilog.api.repository.user.SessionRepository;
 import com.myrou.hyechilog.config.data.UserSession;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * [2024.02.20]
  * API 인증 : ArgumentResolver 이용하기
  */
+@RequiredArgsConstructor
 public class AuthResolver implements HandlerMethodArgumentResolver
 {
-	
+	private final SessionRepository sessionRepository;
 	@Override
 	public boolean supportsParameter(MethodParameter parameter)
 	{
@@ -35,9 +40,9 @@ public class AuthResolver implements HandlerMethodArgumentResolver
 		}
 		
 		// 데이터베이스 사용자 확인 작업
-		// ...
+		Session session = sessionRepository.findByAccessToken(accessToken).orElseThrow(UnAuthorized::new);
 		
 		// accessToken 이 있다면 UserSession 의 name에 accessToken을 담아 넘긴다.
-		return new UserSession(1L);
+		return new UserSession(session.getUser().getId());
 	}
 }
