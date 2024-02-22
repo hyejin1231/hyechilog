@@ -34,6 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthResolver implements HandlerMethodArgumentResolver
 {
 	private final SessionRepository sessionRepository;
+	
+	private final AppConfig appConfig;
 	private static final String KEY = "tESFRxlqGAmAiPkktb+gvKfvIRh2JpLGch2xGJtWBUg=";
 	@Override
 	public boolean supportsParameter(MethodParameter parameter)
@@ -91,7 +93,7 @@ public class AuthResolver implements HandlerMethodArgumentResolver
 		String jwt = cookies[0].getValue();
 		
 		try {
-			SecretKey secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(KEY));
+			SecretKey secretKey = Keys.hmacShaKeyFor(appConfig.getSecretKey());
 			
 			Jws<Claims> claimsJws = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(jwt);
 			

@@ -10,4 +10,4 @@ Content-Type: application/json
 ### 인증 페이지 요청
 GET http://localhost:8080/api/v1/test
 Content-Type: application/json
-Set-Cookie: SESSION=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.WYaVK28IH5iEGoxepRKBBxQEg8sv-1Y6w0-EXFsePRE
+Set-Cookie: SESSION=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzA4NTc5NzgxfQ.uD6pKYfVjxmSQ8PYnCnwhN-kNEdhEvYa74_KS9rtfEo

@@ -3,6 +3,7 @@ package com.myrou.hyechilog.api.controller.auth;
 import java.security.Key;
 import java.time.Duration;
 import java.util.Base64;
+import java.util.Date;
 
 import javax.crypto.SecretKey;
 
@@ -16,6 +17,7 @@ import com.myrou.hyechilog.api.controller.auth.request.LoginRequest;
 import com.myrou.hyechilog.api.controller.blog.ApiResponse;
 import com.myrou.hyechilog.api.service.auth.AuthService;
 import com.myrou.hyechilog.api.service.auth.response.AuthResponse;
+import com.myrou.hyechilog.config.AppConfig;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -29,7 +31,9 @@ public class AuthController
 {
 	private final AuthService authService;
 	
-	private static final String KEY = "tESFRxlqGAmAiPkktb+gvKfvIRh2JpLGch2xGJtWBUg=";
+	private final AppConfig appConfig;
+	
+//	private static final String KEY = "tESFRxlqGAmAiPkktb+gvKfvIRh2JpLGch2xGJtWBUg=";
 	
 	/*
 	@PostMapping("/auth/login")
@@ -63,9 +67,13 @@ public class AuthController
 		// 2) DB 에서 조회
 		Long userId = authService.login(loginRequest);
 		
-		SecretKey secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(KEY));
+		SecretKey secretKey = Keys.hmacShaKeyFor(appConfig.getSecretKey());
 		
-		String jws = Jwts.builder().subject(String.valueOf(userId)).signWith(secretKey).compact();
+		String jws = Jwts.builder()
+				.subject(String.valueOf(userId))
+				.signWith(secretKey)
+				.setIssuedAt(new Date()) // -> 새로 생성
+				.compact();
 		
 		ResponseCookie cookie = ResponseCookie.from("SESSION", jws)
 				.domain("localhost")
