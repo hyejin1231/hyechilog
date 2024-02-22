@@ -43,17 +43,19 @@ class AuthServiceTest
 	    // given
 		User user = User.builder().email("hyechii@gmail.com").password("1231")
 				.name("hyechii").build();
-		userRepository.save(user);
+		User saveUser = userRepository.save(user);
 		
 		LoginRequest request = LoginRequest.builder().email("hyechii@gmail.com")
 				.password("1231")
 				.build();
 		
 		// when
-		AuthResponse authResponse = authService.login(request);
+//		AuthResponse authResponse = authService.login(request);
+		Long userId = authService.login(request);
 		
 		// then
-		assertThat(authResponse).isNotNull();
+//		assertThat(authResponse).isNotNull();
+		assertThat(userId).isEqualTo(saveUser.getId());
 	}
 	
 	@DisplayName("사용자를 미리 한명 저장해둔 다음, 가입되지 않은 사용자로 로그인 요청 시 에러 발생한다.")
