@@ -19,7 +19,7 @@ public class AuthService
 	private final UserRepository userRepository;
 	
 	@Transactional
-	public AuthResponse login(LoginRequest loginRequest)
+	public Long login(LoginRequest loginRequest)
 	{
 		// 1) 로그인 처리
 		User user = userRepository.findByEmailAndPassword(
@@ -27,8 +27,9 @@ public class AuthService
 				.orElseThrow(InvalidLoginInformation::new);
 		
 		// 2) 세션 토큰 발급
-		Session session = user.addSession();
+//		Session session = user.addSession();
 		
-		return new AuthResponse(session.getAccessToken());
+//		return new AuthResponse(session.getAccessToken());
+		return user.getId();
 	}
 }

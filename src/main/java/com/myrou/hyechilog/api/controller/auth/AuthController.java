@@ -1,6 +1,10 @@
 package com.myrou.hyechilog.api.controller.auth;
 
+import java.security.Key;
 import java.time.Duration;
+import java.util.Base64;
+
+import javax.crypto.SecretKey;
 
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +17,8 @@ import com.myrou.hyechilog.api.controller.blog.ApiResponse;
 import com.myrou.hyechilog.api.service.auth.AuthService;
 import com.myrou.hyechilog.api.service.auth.response.AuthResponse;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +29,9 @@ public class AuthController
 {
 	private final AuthService authService;
 	
+	private static final String KEY = "tESFRxlqGAmAiPkktb+gvKfvIRh2JpLGch2xGJtWBUg=";
+	
+	/*
 	@PostMapping("/auth/login")
 	public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest)
 	{
@@ -44,9 +53,31 @@ public class AuthController
 		log.info(">>> cookie = {}", cookie);
 		
 		// 3) 토큰 발급 및 리턴 ?
-		return ResponseEntity.ok().header("Set-Cookie", cookie.toString())
-				
-				
+		return ResponseEntity.ok().header("Set-Cookie", cookie.toString()).build();
+	}
+	 */
+	
+	@PostMapping("/auth/login")
+	public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest)
+	{
+		// 2) DB 에서 조회
+		Long userId = authService.login(loginRequest);
+		
+		SecretKey secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(KEY));
+		
+		String jws = Jwts.builder().subject(String.valueOf(userId)).signWith(secretKey).compact();
+		
+		ResponseCookie cookie = ResponseCookie.from("SESSION", jws)
+				.domain("localhost")
+				.path("/")
+				.httpOnly(true)
+				.secure(false)
+				.maxAge(Duration.ofDays(30))
+				.sameSite("Strict")
 				.build();
+		log.info(">>> cookie = {}", cookie);
+		
+		// 3) 토큰 발급 및 리턴 ?
+		return ResponseEntity.ok().header("Set-Cookie", cookie.toString()).build();
 	}
 }
