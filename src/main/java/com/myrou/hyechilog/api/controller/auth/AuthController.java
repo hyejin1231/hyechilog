@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.myrou.hyechilog.api.controller.auth.request.LoginRequest;
+import com.myrou.hyechilog.api.controller.auth.request.SignRequest;
 import com.myrou.hyechilog.api.controller.blog.ApiResponse;
 import com.myrou.hyechilog.api.service.auth.AuthService;
 import com.myrou.hyechilog.api.service.auth.response.AuthResponse;
+import com.myrou.hyechilog.api.service.auth.response.SignResponse;
 import com.myrou.hyechilog.config.AppConfig;
 
 import io.jsonwebtoken.Jwts;
@@ -87,5 +89,11 @@ public class AuthController
 		
 		// 3) 토큰 발급 및 리턴 ?
 		return ResponseEntity.ok().header("Set-Cookie", cookie.toString()).build();
+	}
+	
+	@PostMapping("/auth/sign")
+	public ApiResponse<SignResponse> sign(@RequestBody SignRequest signRequest)
+	{
+		return ApiResponse.ok(authService.sign(signRequest));
 	}
 }

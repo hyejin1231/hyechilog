@@ -8,12 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.myrou.hyechilog.api.controller.auth.request.LoginRequest;
+import com.myrou.hyechilog.api.controller.auth.request.SignRequest;
 import com.myrou.hyechilog.api.domain.blog.User;
+import com.myrou.hyechilog.api.exception.AlreadyExistsException;
 import com.myrou.hyechilog.api.exception.InvalidLoginInformation;
 import com.myrou.hyechilog.api.exception.UnAuthorized;
 import com.myrou.hyechilog.api.repository.user.SessionRepository;
 import com.myrou.hyechilog.api.repository.user.UserRepository;
 import com.myrou.hyechilog.api.service.auth.response.AuthResponse;
+import com.myrou.hyechilog.api.service.auth.response.SignResponse;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,9 +74,47 @@ class AuthServiceTest
 				.build();
 		
 		// when.. then
-		Assertions.assertThatThrownBy(() -> {authService.login(request);})
+		assertThatThrownBy(() -> {authService.login(request);})
 				.isInstanceOf(InvalidLoginInformation.class)
 				.hasMessage("아이디/비밀번호를 올바르게 입력하세요.");
+		
+	}
+	
+	
+	@DisplayName("회원가입 성공 테스트")
+	@Test
+	void sign() {
+	    // given
+		SignRequest request = SignRequest.builder().email("hyechilog@gmail.com")
+				.name("hyechii")
+				.password("1231").build();
+		
+		// when
+		SignResponse response = authService.sign(request);
+		
+		// then
+		assertThat(userRepository.count()).isEqualTo(1);
+		assertThat(response.getEmail()).isEqualTo("hyechilog@gmail.com");
+	}
+	
+	@DisplayName("회원가입 중복 이메일 가입 실패  테스트")
+	@Test
+	void signWithDupEmail() {
+		// given
+		User preUser = User.builder().email("hyechilog@gmail.com").password("1231")
+				.name("heychii").build();
+		userRepository.save(preUser);
+		
+		SignRequest request = SignRequest.builder().email("hyechilog@gmail.com")
+				.name("hyechii")
+				.password("1231").build();
+		
+		// when
+		
+		Assertions.assertThatThrownBy(() -> authService.sign(request))
+				.isInstanceOf(
+						AlreadyExistsException.class)
+				.hasMessage("이미 가입된 이메일입니다.");
 		
 	}
 	

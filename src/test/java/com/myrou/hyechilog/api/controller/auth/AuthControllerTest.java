@@ -13,12 +13,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myrou.hyechilog.api.controller.auth.request.LoginRequest;
+import com.myrou.hyechilog.api.controller.auth.request.SignRequest;
 import com.myrou.hyechilog.api.domain.blog.Session;
 import com.myrou.hyechilog.api.domain.blog.User;
 import com.myrou.hyechilog.api.repository.user.SessionRepository;
 import com.myrou.hyechilog.api.repository.user.UserRepository;
+import com.myrou.hyechilog.api.service.auth.response.SignResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -130,4 +133,22 @@ class AuthControllerTest
 				.andDo(MockMvcResultHandlers.print());
 	}
 	
+	@DisplayName("회원가입 성공 테스트")
+	@Test
+	void sign() throws Exception
+	{
+		// given
+		SignRequest request = SignRequest.builder().email("hyechilog@gmail.com")
+				.name("hyechii")
+				.password("1231").build();
+		
+		// when
+		mockMvc.perform(MockMvcRequestBuilders.post("/auth/sign")
+								.contentType(MediaType.APPLICATION_JSON)
+								.content(objectMapper.writeValueAsString(request)))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value("hyechilog@gmail.com"))
+				.andDo(MockMvcResultHandlers.print());
+		
+	}
 }
