@@ -95,6 +95,11 @@ class AuthServiceTest
 		// then
 		assertThat(userRepository.count()).isEqualTo(1);
 		assertThat(response.getEmail()).isEqualTo("hyechilog@gmail.com");
+		
+		User user = userRepository.findAll().iterator().next();
+		assertThat(user.getPassword()).isNotEqualTo("1231");
+		assertThat(user.getPassword()).isNotEmpty();
+		
 	}
 	
 	@DisplayName("회원가입 중복 이메일 가입 실패  테스트")

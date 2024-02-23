@@ -2,6 +2,7 @@ package com.myrou.hyechilog.api.service.auth;
 
 import java.util.Optional;
 
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,12 @@ public class AuthService
 		if (byEmail.isPresent()) {
 			throw new AlreadyExistsException();
 		}
+		SCryptPasswordEncoder passwordEncoder = new SCryptPasswordEncoder(16, 8,
+																		  1, 32,
+																		  64);
+		String password = signRequest.getPassword();
+		signRequest.setPassword(passwordEncoder.encode(password));
+		
 		User entity = SignRequest.toEntity(signRequest);
 		
 		User save = userRepository.save(entity);

@@ -40,6 +40,12 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
+	// 비밀번호 암호화 라이브러리
+	// https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto
+	implementation 'org.springframework.security:spring-security-crypto'
+	// https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on
+	implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
