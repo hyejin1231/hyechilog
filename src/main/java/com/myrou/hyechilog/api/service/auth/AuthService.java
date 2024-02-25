@@ -3,6 +3,7 @@ package com.myrou.hyechilog.api.service.auth;
 import java.util.Optional;
 
 import com.myrou.hyechilog.support.crypto.PasswordEncoder;
+import com.myrou.hyechilog.support.crypto.ScryptPasswordEncoder;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthService
 {
 	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 	
 	@Transactional
 	public Long login(LoginRequest loginRequest)
@@ -42,7 +44,6 @@ public class AuthService
 		User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(InvalidLoginInformation::new);
 
 		// 2) 비밀번호 암호화
-		PasswordEncoder passwordEncoder = new PasswordEncoder();
 		boolean matches = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
 		if (!matches) {
 			throw new InvalidLoginInformation();
@@ -62,7 +63,6 @@ public class AuthService
 //																		  1, 32,
 //																		  64);
 		// 2) 비밀번호 암호화
-		PasswordEncoder passwordEncoder = new PasswordEncoder();
 		String password = signRequest.getPassword();
 		signRequest.setPassword(passwordEncoder.encrypt(password));
 		

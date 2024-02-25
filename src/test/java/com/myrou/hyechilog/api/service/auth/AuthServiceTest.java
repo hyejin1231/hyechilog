@@ -18,10 +18,12 @@ import com.myrou.hyechilog.api.repository.user.SessionRepository;
 import com.myrou.hyechilog.api.repository.user.UserRepository;
 import com.myrou.hyechilog.api.service.auth.response.AuthResponse;
 import com.myrou.hyechilog.api.service.auth.response.SignResponse;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 @SpringBootTest
 class AuthServiceTest
 {
@@ -127,10 +129,9 @@ class AuthServiceTest
 	@DisplayName("로그인 성공 테스트")
 	public void loginPassTest() {
 		// given
-		PasswordEncoder passwordEncoder = new PasswordEncoder();
 		User user = User.builder()
 				.email("hyechilog@gmail.com")
-				.password(passwordEncoder.encrypt("1231")).build();
+				.password("1231").build();
 		User save = userRepository.save(user);
 
 		LoginRequest request = LoginRequest.builder().email("hyechilog@gmail.com").password("1231").build();
@@ -146,10 +147,9 @@ class AuthServiceTest
 	@DisplayName("로그인 실패 테스트")
 	public void loginFailTest2() {
 		// given
-		PasswordEncoder passwordEncoder = new PasswordEncoder();
 		User user = User.builder()
 				.email("hyechilog@gmail.com")
-				.password(passwordEncoder.encrypt("1231")).build();
+				.password("1231").build();
 		userRepository.save(user);
 
 		LoginRequest request = LoginRequest.builder().email("hyechilog@gmail.com").password("1231111").build();
