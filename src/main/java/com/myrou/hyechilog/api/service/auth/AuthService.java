@@ -2,6 +2,7 @@ package com.myrou.hyechilog.api.service.auth;
 
 import java.util.Optional;
 
+import com.myrou.hyechilog.support.crypto.PasswordEncoder;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,14 +29,25 @@ public class AuthService
 	public Long login(LoginRequest loginRequest)
 	{
 		// 1) 로그인 처리
-		User user = userRepository.findByEmailAndPassword(
-						loginRequest.getEmail(), loginRequest.getPassword())
-				.orElseThrow(InvalidLoginInformation::new);
+//		User user = userRepository.findByEmailAndPassword(
+//						loginRequest.getEmail(), loginRequest.getPassword())
+//				.orElseThrow(InvalidLoginInformation::new);
 		
 		// 2) 세션 토큰 발급
 //		Session session = user.addSession();
 		
 //		return new AuthResponse(session.getAccessToken());
+
+		// 1) 이메일을 통해 user 조회
+		User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(InvalidLoginInformation::new);
+
+		// 2) 비밀번호 암호화
+		PasswordEncoder passwordEncoder = new PasswordEncoder();
+		boolean matches = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
+		if (!matches) {
+			throw new InvalidLoginInformation();
+		}
+
 		return user.getId();
 	}
 	
@@ -46,11 +58,13 @@ public class AuthService
 		if (byEmail.isPresent()) {
 			throw new AlreadyExistsException();
 		}
-		SCryptPasswordEncoder passwordEncoder = new SCryptPasswordEncoder(16, 8,
-																		  1, 32,
-																		  64);
+//		SCryptPasswordEncoder passwordEncoder = new SCryptPasswordEncoder(16, 8,
+//																		  1, 32,
+//																		  64);
+		// 2) 비밀번호 암호화
+		PasswordEncoder passwordEncoder = new PasswordEncoder();
 		String password = signRequest.getPassword();
-		signRequest.setPassword(passwordEncoder.encode(password));
+		signRequest.setPassword(passwordEncoder.encrypt(password));
 		
 		User entity = SignRequest.toEntity(signRequest);
 		
