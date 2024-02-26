@@ -5,7 +5,6 @@ import com.myrou.hyechilog.api.controller.blog.request.BlogEdit;
 import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.service.blog.BlogService;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
-import com.myrou.hyechilog.config.data.UserSession;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,27 +26,7 @@ import java.util.Map;
 public class BlogController {
 
     private final BlogService blogService;
-
-    /**
-     * 임시 : 인증 있어야 들어올 수 있는 페이지
-     *
-     * @return
-     */
-    @GetMapping("/test")
-    public Long testPage(UserSession userSession) {
-        log.info(">>> {}", userSession.getId());
-        return userSession.getId();
-    }
-
-    /**
-     * 임시 : 인증 없이 들어올 수 있는 페이지
-     * @return
-     */
-    @GetMapping("/welcome")
-    public String welCome() {
-        return "welcome";
-    }
-
+    
     /**
      * Blog createV1 : 블로그 글 생성
      *

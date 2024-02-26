@@ -3,19 +3,16 @@ package com.myrou.hyechilog.api.service.auth;
 import java.util.Optional;
 
 import com.myrou.hyechilog.support.crypto.PasswordEncoder;
-import com.myrou.hyechilog.support.crypto.ScryptPasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.myrou.hyechilog.api.controller.auth.request.LoginRequest;
 import com.myrou.hyechilog.api.controller.auth.request.SignRequest;
-import com.myrou.hyechilog.api.domain.blog.Session;
 import com.myrou.hyechilog.api.domain.blog.User;
 import com.myrou.hyechilog.api.exception.AlreadyExistsException;
 import com.myrou.hyechilog.api.exception.InvalidLoginInformation;
 import com.myrou.hyechilog.api.repository.user.UserRepository;
-import com.myrou.hyechilog.api.service.auth.response.AuthResponse;
 import com.myrou.hyechilog.api.service.auth.response.SignResponse;
 
 import lombok.RequiredArgsConstructor;
