@@ -1,8 +1,10 @@
 package com.myrou.hyechilog.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -12,14 +14,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import com.myrou.hyechilog.api.repository.user.UserRepository;
+import com.myrou.hyechilog.config.security.CustomUserDetailService;
 
 /**
  * Spring Security 관련 설정은 여기서 함 !
  */
 @Configuration
 @EnableWebSecurity
+
 public class SecurityConfig
 {
 	@Bean
@@ -35,7 +42,8 @@ public class SecurityConfig
 		return httpSecurity
 				.authorizeHttpRequests(
 						authorize ->
-								authorize.requestMatchers("/auth/login").permitAll()
+								authorize.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+										.requestMatchers(HttpMethod.POST, "/auth/sign").permitAll()
 										.anyRequest().authenticated()
 				)
 				.formLogin(
@@ -56,8 +64,9 @@ public class SecurityConfig
 				.build();
 	}
 	
-	@Bean
-	public UserDetailsService userDetailsService()
+	// InMemory 방식
+//	@Bean
+	public UserDetailsService InMemoryUserDetailsService()
 	{
 		InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
 		UserDetails user = User.withUsername("hyechi").password("1231")
@@ -70,6 +79,7 @@ public class SecurityConfig
 	@Bean
 	public PasswordEncoder passwordEncoder()
 	{
-		return NoOpPasswordEncoder.getInstance();
+//		return NoOpPasswordEncoder.getInstance();
+		return new SCryptPasswordEncoder(16, 8, 1, 32, 64);
 	}
 }

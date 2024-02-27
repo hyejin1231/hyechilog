@@ -1,8 +1,18 @@
+### 회원가입
+POST http://localhost:8080/auth/sign
+Content-Type: application/json
+
+{
+  "name": "hyechi",
+  "email": "hyechilog@gmail.com",
+  "password": "1231"
+}
+
 ### 로그인
 POST http://localhost:8080/auth/login
 Content-Type: application/x-www-form-urlencoded
 
-username=hyechi&password=1231&rembmer=1
+username=hyechilog@gmail.com&password=1231&rembmer=1
 
 ### 메인 페이지
 GET http://localhost:8080
