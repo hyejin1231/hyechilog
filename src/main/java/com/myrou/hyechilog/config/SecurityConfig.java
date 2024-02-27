@@ -46,6 +46,12 @@ public class SecurityConfig
 										.passwordParameter("password")
 										.defaultSuccessUrl("/")
 				)
+				.rememberMe(
+						rm ->
+								rm.rememberMeParameter("remember")
+										.alwaysRemember(false)
+										.tokenValiditySeconds(2592000) // 30일 동안 저장
+				)
 				.csrf(AbstractHttpConfigurer::disable)
 				.build();
 	}
