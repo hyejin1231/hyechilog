@@ -19,17 +19,24 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myrou.hyechilog.api.repository.user.UserRepository;
+import com.myrou.hyechilog.config.handler.Http401Handler;
+import com.myrou.hyechilog.config.handler.Http403Handler;
+import com.myrou.hyechilog.config.handler.LoginFailHandler;
 import com.myrou.hyechilog.config.security.CustomUserDetailService;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Spring Security 관련 설정은 여기서 함 !
  */
 @Configuration
 @EnableWebSecurity
-
+@RequiredArgsConstructor
 public class SecurityConfig
 {
+	private final ObjectMapper objectMapper;
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer()
 	{
@@ -45,8 +52,8 @@ public class SecurityConfig
 						authorize ->
 								authorize.requestMatchers( "/auth/login").permitAll()
 										.requestMatchers( "/auth/sign").permitAll()
-										.requestMatchers("/admin")
-											.access(new WebExpressionAuthorizationManager("hasRole('ADMIN') AND hasAuthority('WRITE')")) // '관리자' 역할이면서 '쓰기' 권한이 있는 사람만 관리자 페이지 접근 가능
+										.requestMatchers("/admin").hasRole("ADMIN")
+//											.access(new WebExpressionAuthorizationManager("hasRole('ADMIN') AND hasAuthority('WRITE')")) // '관리자' 역할이면서 '쓰기' 권한이 있는 사람만 관리자 페이지 접근 가능
 										.anyRequest().authenticated()
 				)
 				.formLogin(
@@ -56,6 +63,12 @@ public class SecurityConfig
 										.usernameParameter("username")
 										.passwordParameter("password")
 										.defaultSuccessUrl("/")
+										.failureHandler(new LoginFailHandler(objectMapper))
+				)
+				.exceptionHandling(
+						e ->
+								e.accessDeniedHandler(new Http403Handler(objectMapper))
+										.authenticationEntryPoint(new Http401Handler(objectMapper))
 				)
 				.rememberMe(
 						rm ->
