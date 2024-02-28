@@ -17,6 +17,12 @@ username=hyechilog@gmail.com&password=1231&rembmer=1
 ### 메인 페이지
 GET http://localhost:8080
 
+### 사용자 페이지
+GET http://localhost:8080/user
+
+### 관리자 페이지
+GET http://localhost:8080/admin
+
 ### 인증 페이지 요청
 GET http://localhost:8080/api/v1/test
 Content-Type: application/json

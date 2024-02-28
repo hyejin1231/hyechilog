@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 
 import com.myrou.hyechilog.api.repository.user.UserRepository;
 import com.myrou.hyechilog.config.security.CustomUserDetailService;
@@ -42,8 +43,10 @@ public class SecurityConfig
 		return httpSecurity
 				.authorizeHttpRequests(
 						authorize ->
-								authorize.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-										.requestMatchers(HttpMethod.POST, "/auth/sign").permitAll()
+								authorize.requestMatchers( "/auth/login").permitAll()
+										.requestMatchers( "/auth/sign").permitAll()
+										.requestMatchers("/admin")
+											.access(new WebExpressionAuthorizationManager("hasRole('ADMIN') AND hasAuthority('WRITE')")) // '관리자' 역할이면서 '쓰기' 권한이 있는 사람만 관리자 페이지 접근 가능
 										.anyRequest().authenticated()
 				)
 				.formLogin(
