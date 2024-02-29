@@ -17,7 +17,7 @@ public class UserPrincipal extends User
 	public UserPrincipal(com.myrou.hyechilog.api.domain.blog.User user)
 	{
 		super(user.getEmail(), user.getPassword(),
-			  List.of(new SimpleGrantedAuthority("ROLE_USER"), // ROLE 을 표기하면 역할
+			  List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), // ROLE 을 표기하면 역할
 					  new SimpleGrantedAuthority("WRITE"))); // ROLE 표기 안하면 권한
 		this.userId = user.getId();
 	}

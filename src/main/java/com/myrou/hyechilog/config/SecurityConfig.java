@@ -1,5 +1,6 @@
 package com.myrou.hyechilog.config;
 
+import com.myrou.hyechilog.config.handler.LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -63,11 +64,13 @@ public class SecurityConfig
 		return httpSecurity
 				.authorizeHttpRequests(
 						authorize ->
-								authorize.requestMatchers( "/auth/login").permitAll()
-										.requestMatchers( "/auth/sign").permitAll()
+								authorize
+										.anyRequest().permitAll()
+//										.requestMatchers( "/auth/login").permitAll()
+//										.requestMatchers( "/auth/sign").permitAll()
 //										.requestMatchers("/admin").hasRole("ADMIN")
 //											.access(new WebExpressionAuthorizationManager("hasRole('ADMIN') AND hasAuthority('WRITE')")) // '관리자' 역할이면서 '쓰기' 권한이 있는 사람만 관리자 페이지 접근 가능
-										.anyRequest().authenticated()
+//										.anyRequest().authenticated()
 				)
 				.addFilterBefore(emailPasswordAuthFilter(), UsernamePasswordAuthenticationFilter.class)
 //				.formLogin( // 1) 로그인 방식 : 폼 로그인 방식
@@ -99,7 +102,8 @@ public class SecurityConfig
 	{
 		EmailPasswordAuthFilter filter = new EmailPasswordAuthFilter("/auth/login", objectMapper);
 		filter.setAuthenticationManager(authenticationManager());
-		filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler("/"));
+		filter.setAuthenticationSuccessHandler(new LoginSuccessHandler(objectMapper));
+//		filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler("/"));
 		filter.setAuthenticationFailureHandler(new LoginFailHandler(objectMapper));
 		filter.setSecurityContextRepository(new HttpSessionSecurityContextRepository()); // 이걸 꼭 해줘야 세션이 정상 생성 된다고 함!
 		

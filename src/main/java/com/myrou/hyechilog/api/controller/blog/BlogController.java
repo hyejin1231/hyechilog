@@ -9,6 +9,7 @@ import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -81,6 +82,7 @@ public class BlogController {
      * @param request
      * @return
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/blogs/new")
     public ApiResponse<BlogResponse> create(@RequestBody @Valid BlogCreateRequest request) {
         request.validate();
@@ -133,6 +135,7 @@ public class BlogController {
      * @param blogEdit : 블로그 수정만 담은 vo
      * @return
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/blogs/{blogId}")
     public ApiResponse<BlogResponse> editBlog(@PathVariable long blogId, @RequestBody BlogEdit blogEdit)
     {
@@ -144,6 +147,7 @@ public class BlogController {
      * @param blogId
      * @return
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/blogs/{blogId}")
     public ApiResponse deleteBlog(@PathVariable long blogId)
     {
