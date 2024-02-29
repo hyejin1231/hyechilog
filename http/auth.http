@@ -8,17 +8,26 @@ Content-Type: application/json
   "password": "1231"
 }
 
-### 로그인 (성공)
+### 로그인_폼 로그인 형식 (성공)
 POST http://localhost:8080/auth/login
 Content-Type: application/x-www-form-urlencoded
 
 username=hyechilog@gmail.com&password=1231&rembmer=1
 
-### 로그인 (실패)
+### 로그인_폼 로그인 형식 (실패)
 POST http://localhost:8080/auth/login
 Content-Type: application/x-www-form-urlencoded
 
 username=hyechilog111@gmail.com&password=1231&rembmer=1
+
+### 로그인_JSON 형식
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email" : "hyechilog@gmail.com",
+  "password" : "1231"
+}
 
 ### 메인 페이지
 GET http://localhost:8080
