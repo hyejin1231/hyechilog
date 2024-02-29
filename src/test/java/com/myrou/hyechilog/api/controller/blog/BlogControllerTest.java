@@ -21,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -93,6 +94,7 @@ class BlogControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @WithMockUser(username = "hyechilog@gmail.com", roles = {"ADMIN"}, password = "1231")
     @DisplayName("게시글 등록을 요청할 때 title 값이 없으면 '제목은 필수입니다.' 에러 메시지 출력된다.")
     @Test
     void errorWhenNoTitle() throws Exception {
@@ -115,6 +117,7 @@ class BlogControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @WithMockUser(username = "hyechilog@gmail.com", roles = {"ADMIN"}, password = "1231")
     @DisplayName("게시글 등록을 요청할 때 content 값이 없으면 '내용은 필수입니다.' 에러 메시지 출력된다.")
     @Test
     void errorWhenNoContent() throws Exception {
@@ -137,6 +140,7 @@ class BlogControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @WithMockUser(username = "hyechilog@gmail.com", roles = {"ADMIN"}, password = "1231")
     @DisplayName("게시글 등록을 요청하면 DB에 게시글이 저장된다.")
     @Test
     void create() throws Exception {
@@ -155,6 +159,7 @@ class BlogControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @WithMockUser(username = "hyechilog@gmail.com", roles = {"ADMIN"}, password = "1231")
     @DisplayName("게시글 등록할 때 제목에 '바보'가 포함되면 예외가 발생한다.")
     @Test
     void NotCreateWhenTitleContainsWord() throws Exception {
@@ -267,8 +272,8 @@ class BlogControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.[9].title").value("제목 [21]"))
                 .andDo(MockMvcResultHandlers.print());
     }
-    
-    
+
+    @WithMockUser(username = "hyechilog@gmail.com", roles = {"ADMIN"}, password = "1231")
     @DisplayName("글 1개를 저장하고 글 제목을 수정하면 수정한 블로그 글을 조회할 수 있다.")
     @Test
     void editBlog() throws Exception
@@ -291,8 +296,9 @@ class BlogControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value("글 내용"))
                 .andDo(MockMvcResultHandlers.print());
     }
-    
-    
+
+
+    @WithMockUser(username = "hyechilog@gmail.com", roles = {"ADMIN"}, password = "1231")
     @DisplayName("게시글 1개를 작성 후 삭제하면 해당 글이 삭제된다.")
     @Test
     void delete() throws Exception
@@ -320,6 +326,7 @@ class BlogControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @WithMockUser(username = "hyechilog@gmail.com", roles = {"ADMIN"}, password = "1231")
     @Test
     @DisplayName("존재하지 않는 글을 수정하면 예외가 발생한다.")
     void editNoBlog() throws Exception {
@@ -331,6 +338,7 @@ class BlogControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @WithMockUser(username = "hyechilog@gmail.com", roles = {"ADMIN"}, password = "1231")
     @Test
     @DisplayName("존재하지 않는 글을 삭제하면 예외가 발생한다.")
     void deleteNoBlog() throws Exception {

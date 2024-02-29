@@ -18,6 +18,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.restdocs.snippet.Attributes;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -81,6 +82,7 @@ public class BlogControllerDocsTest {
     }
 
     @Test
+    @WithMockUser(username = "hyechilog@gmail.com", roles = {"ADMIN"}, password = "1231")
     @DisplayName("게시글 작성 문서 테스트")
     void writeDocsTest() throws Exception {
         BlogCreateRequest request = BlogCreateRequest.builder().title("블로그 제목입니다.").content("블로그 내용입니다.").build();
