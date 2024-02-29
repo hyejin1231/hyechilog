@@ -1,5 +1,6 @@
 package com.myrou.hyechilog.api.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,13 +13,15 @@ import com.myrou.hyechilog.config.security.UserPrincipal;
 @RestController
 public class MainController
 {
-	
+
+	@PreAuthorize("hasRole('ROLE_USER')")
 	@GetMapping("/user")
 	public String user(@AuthenticationPrincipal UserPrincipal userPrincipal)
 	{
 		return "사용자 페이지 입니다. ❤";
 	}
-	
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/admin")
 	public String admin()
 	{

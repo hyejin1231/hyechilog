@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -41,6 +42,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig
 {
@@ -63,7 +65,7 @@ public class SecurityConfig
 						authorize ->
 								authorize.requestMatchers( "/auth/login").permitAll()
 										.requestMatchers( "/auth/sign").permitAll()
-										.requestMatchers("/admin").hasRole("ADMIN")
+//										.requestMatchers("/admin").hasRole("ADMIN")
 //											.access(new WebExpressionAuthorizationManager("hasRole('ADMIN') AND hasAuthority('WRITE')")) // '관리자' 역할이면서 '쓰기' 권한이 있는 사람만 관리자 페이지 접근 가능
 										.anyRequest().authenticated()
 				)
