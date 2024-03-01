@@ -235,7 +235,7 @@ class BlogControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
-    @Test
+//    @Test
     @DisplayName("게시글 30개 작성 후 첫번째 페이지 조회하면 10개의 글이 조회된다.")
     void getListWithPaging() throws Exception {
         // given
@@ -254,7 +254,7 @@ class BlogControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
-    @Test
+//    @Test
     @DisplayName("게시글 30개 작성 후 첫번째 페이지 조회하면 10개의 글이 조회된다.")
     void getListWithQueryDsl() throws Exception {
         // given

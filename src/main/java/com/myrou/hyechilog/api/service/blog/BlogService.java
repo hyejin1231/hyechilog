@@ -5,8 +5,11 @@ import com.myrou.hyechilog.api.controller.blog.request.BlogEdit;
 import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.domain.blog.BlogEditor;
+import com.myrou.hyechilog.api.domain.blog.User;
 import com.myrou.hyechilog.api.exception.BlogNotFound;
+import com.myrou.hyechilog.api.exception.UserNotFound;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
+import com.myrou.hyechilog.api.repository.user.UserRepository;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +29,19 @@ import java.util.stream.Stream;
 public class BlogService {
 
     private final BlogRepository blogRepository;
+    private final UserRepository userRepository;
 
-    public BlogResponse write(BlogCreateRequest blogCreateRequest) {
-        Blog blog = BlogCreateRequest.toEntity(blogCreateRequest);
+    public BlogResponse write(BlogCreateRequest blogCreateRequest, Long userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+
+        Blog blog = BlogCreateRequest.toEntity(blogCreateRequest, user);
         return BlogResponse.of(blogRepository.save(blog));
     }
 
-    public List<BlogResponse> writes(List<BlogCreateRequest> blogCreateRequests) {
-        List<Blog> blogs = blogCreateRequests.stream().map(BlogCreateRequest::toEntity).collect(Collectors.toList());
+    public List<BlogResponse> writes(List<BlogCreateRequest> blogCreateRequests, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        List<Blog> blogs = blogCreateRequests.stream().map((BlogCreateRequest request) -> BlogCreateRequest.toEntity(request, user)).collect(Collectors.toList());
         return blogRepository.saveAll(blogs).stream().map(BlogResponse::of).collect(Collectors.toList());
     }
 

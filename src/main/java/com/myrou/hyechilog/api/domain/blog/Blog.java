@@ -21,10 +21,15 @@ public class Blog {
     @Lob
     private String content;
 
+    @ManyToOne
+    @JoinColumn
+    private User user;
+
     @Builder
-    public Blog(String title, String content) {
+    public Blog(String title, String content, User user) {
         this.title = title;
         this.content = content;
+        this.user = user;
     }
     
     public BlogEditor.BlogEditorBuilder toEditor()
@@ -38,5 +43,9 @@ public class Blog {
     {
         this.title = blogEditor.getTitle();
         this.content = blogEditor.getContent();
+    }
+
+    public Long getUserId() {
+        return this.user.getId();
     }
 }

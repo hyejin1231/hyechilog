@@ -6,10 +6,12 @@ import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.service.blog.BlogService;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 
+import com.myrou.hyechilog.config.security.UserPrincipal;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -84,9 +86,10 @@ public class BlogController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/blogs/new")
-    public ApiResponse<BlogResponse> create(@RequestBody @Valid BlogCreateRequest request) {
+    public ApiResponse<BlogResponse> create(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                            @RequestBody @Valid BlogCreateRequest request) {
         request.validate();
-        BlogResponse blog = blogService.write(request);
+        BlogResponse blog = blogService.write(request, userPrincipal.getUserId());
         return ApiResponse.ok(blog);
     }
 
@@ -147,7 +150,8 @@ public class BlogController {
      * @param blogId
      * @return
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')  && hasPermission(#blogId, 'POST', 'DELETE')")
     @DeleteMapping("/blogs/{blogId}")
     public ApiResponse deleteBlog(@PathVariable long blogId)
     {

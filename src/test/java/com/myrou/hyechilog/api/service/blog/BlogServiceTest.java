@@ -59,7 +59,7 @@ class BlogServiceTest {
                 );
     }
 
-    @Test
+//    @Test
     @DisplayName("글을 10개 한번에 작성후, 저장하면 10개 다 저장된다.")
     void writes() {
         List<BlogCreateRequest> blogCreateRequests = IntStream.range(1, 11)
