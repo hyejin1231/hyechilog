@@ -4,8 +4,10 @@ import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
 import com.myrou.hyechilog.api.controller.blog.request.BlogEdit;
 import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.domain.blog.Blog;
+import com.myrou.hyechilog.api.domain.blog.User;
 import com.myrou.hyechilog.api.exception.BlogNotFound;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
+import com.myrou.hyechilog.api.repository.user.UserRepository;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
@@ -30,22 +32,29 @@ class BlogServiceTest {
     @Autowired
     private BlogRepository blogRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @BeforeEach
     void setUp() {
         blogRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
 
     @Test
     @DisplayName("게시글 저장한다.")
     void write() {
         // given
+        User user = User.builder().name("hyechi").email("hyehilog@gmail.com").password("1231").build();
+        User save = userRepository.save(user);
+
         BlogCreateRequest request = BlogCreateRequest.builder()
                 .title("테스트 제목")
                 .content("테스트 내용")
                 .build();
 
         // when
-        BlogResponse blog = blogService.write(request);
+        BlogResponse blog = blogService.write(request, save.getId());
 
         // then
         assertThat(blog)
@@ -62,11 +71,14 @@ class BlogServiceTest {
 //    @Test
     @DisplayName("글을 10개 한번에 작성후, 저장하면 10개 다 저장된다.")
     void writes() {
+        User user = User.builder().name("hyechi").email("hyehilog@gmail.com").password("1231").build();
+        User save = userRepository.save(user);
+
         List<BlogCreateRequest> blogCreateRequests = IntStream.range(1, 11)
                 .mapToObj(i -> BlogCreateRequest.builder().title("제목 [" + i + "]").content("내용 [" + i + "]").build())
                 .collect(Collectors.toList());
 
-        List<BlogResponse> blogResponses = blogService.writes(blogCreateRequests);
+        List<BlogResponse> blogResponses = blogService.writes(blogCreateRequests, save.getId());
 
         assertThat(blogResponses).hasSize(10);
     }
@@ -75,12 +87,14 @@ class BlogServiceTest {
     @DisplayName("글을 저장하고 그 글의 id 값으로 조회한다.")
     void get() {
         // given
+        User user = User.builder().name("hyechi").email("hyehilog@gmail.com").password("1231").build();
+        User save = userRepository.save(user);
         BlogCreateRequest request = BlogCreateRequest.builder()
                 .title("Hello")
                 .content("World!")
                 .build();
 
-        BlogResponse givenBlog = blogService.write(request);
+        BlogResponse givenBlog = blogService.write(request, save.getId());
 
         // when
         BlogResponse whenBlog = blogService.get(givenBlog.getId());
@@ -102,6 +116,8 @@ class BlogServiceTest {
     @DisplayName("글을 3개 저장하고 모든 글을 조회하면 3개의 글이 조회된다.")
     void getList() {
         // given
+        User user = User.builder().name("hyechi").email("hyehilog@gmail.com").password("1231").build();
+        User save = userRepository.save(user);
         BlogCreateRequest request1 = BlogCreateRequest.builder()
                 .title("Hello1")
                 .content("World!")
@@ -114,9 +130,9 @@ class BlogServiceTest {
                 .title("Hello3")
                 .content("World!")
                 .build();
-        blogService.write(request1);
-        blogService.write(request2);
-        blogService.write(request3);
+        blogService.write(request1, save.getId());
+        blogService.write(request2, save.getId());
+        blogService.write(request3, save.getId());
 
         // when
         List<BlogResponse> blogs = blogService.getList();
@@ -176,11 +192,13 @@ class BlogServiceTest {
     void editBlog()
     {
         // given
+        User user = User.builder().name("hyechi").email("hyehilog@gmail.com").password("1231").build();
+        User save = userRepository.save(user);
         BlogCreateRequest request = BlogCreateRequest.builder()
                                                         .title("글 제목")
                                                         .content("글 내용").build();
         
-        BlogResponse response = blogService.write(request);
+        BlogResponse response = blogService.write(request, save.getId());
         
         BlogEdit blogEdit = BlogEdit.builder().title("글 제목 수정").content("글 내용").build();
         
@@ -197,11 +215,13 @@ class BlogServiceTest {
     @Test
     void editWhenNoBlogId() {
         // given
+        User user = User.builder().name("hyechi").email("hyehilog@gmail.com").password("1231").build();
+        User save = userRepository.save(user);
         BlogCreateRequest request = BlogCreateRequest.builder()
                 .title("글 제목")
                 .content("글 내용").build();
         
-        BlogResponse response = blogService.write(request);
+        BlogResponse response = blogService.write(request, save.getId());
         
         BlogEdit blogEdit = BlogEdit.builder().title("글 제목 수정").content("글 내용").build();
         
@@ -216,11 +236,13 @@ class BlogServiceTest {
     void editBlogWhenTitleIsNull()
     {
         // given
+        User user = User.builder().name("hyechi").email("hyehilog@gmail.com").password("1231").build();
+        User save = userRepository.save(user);
         BlogCreateRequest request = BlogCreateRequest.builder()
                 .title("글 제목")
                 .content("글 내용").build();
         
-        BlogResponse response = blogService.write(request);
+        BlogResponse response = blogService.write(request, save.getId());
         
         BlogEdit blogEdit = BlogEdit.builder().content("글 내용 수정~ ").build();
         

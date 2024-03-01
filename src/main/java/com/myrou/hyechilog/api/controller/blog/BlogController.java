@@ -151,7 +151,7 @@ public class BlogController {
      * @return
      */
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PreAuthorize("hasRole('ROLE_ADMIN')  && hasPermission(#blogId, 'POST', 'DELETE')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')  && hasPermission(#blogId,'BLOG' , 'DELETE')")
     @DeleteMapping("/blogs/{blogId}")
     public ApiResponse deleteBlog(@PathVariable long blogId)
     {

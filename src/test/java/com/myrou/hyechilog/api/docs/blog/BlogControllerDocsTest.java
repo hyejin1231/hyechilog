@@ -1,7 +1,10 @@
 package com.myrou.hyechilog.api.docs.blog;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.myrou.hyechilog.annotation.BlogWithMockUser;
 import com.myrou.hyechilog.api.controller.blog.request.BlogCreateRequest;
+import com.myrou.hyechilog.api.domain.blog.User;
+import com.myrou.hyechilog.api.repository.user.UserRepository;
 import com.myrou.hyechilog.api.service.blog.BlogService;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -42,6 +45,8 @@ public class BlogControllerDocsTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private UserRepository userRepository;
 
 //    @BeforeEach
 //    void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
@@ -52,11 +57,14 @@ public class BlogControllerDocsTest {
 //    }
 
     @Test
+    @BlogWithMockUser
     @DisplayName("블로그 글 작성 후 단건 조회하는 api docs 생성 테스트")
     void createRestDocsWithGetBlog() throws Exception {
         // given
+        User user = userRepository.findAll().get(0);
+
         BlogCreateRequest request = BlogCreateRequest.builder().title("Hyechii Blog Test").content("Blog Content").build();
-        BlogResponse response = blogService.write(request);
+        BlogResponse response = blogService.write(request, user.getId());
 
         // when then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/blogs/{blogId}", response.getId()).
@@ -82,7 +90,8 @@ public class BlogControllerDocsTest {
     }
 
     @Test
-    @WithMockUser(username = "hyechilog@gmail.com", roles = {"ADMIN"}, password = "1231")
+    @BlogWithMockUser
+//    @WithMockUser(username = "hyechilog@gmail.com", roles = {"ADMIN"}, password = "1231")
     @DisplayName("게시글 작성 문서 테스트")
     void writeDocsTest() throws Exception {
         BlogCreateRequest request = BlogCreateRequest.builder().title("블로그 제목입니다.").content("블로그 내용입니다.").build();
