@@ -2,9 +2,12 @@ package com.myrou.hyechilog.api.service.comment;
 
 import com.myrou.hyechilog.api.controller.blog.ApiResponse;
 import com.myrou.hyechilog.api.controller.comment.request.CommentCreateRequest;
+import com.myrou.hyechilog.api.controller.comment.request.CommentDeleteRequest;
 import com.myrou.hyechilog.api.domain.blog.Blog;
 import com.myrou.hyechilog.api.domain.comment.Comment;
 import com.myrou.hyechilog.api.exception.BlogNotFound;
+import com.myrou.hyechilog.api.exception.CommentNotFound;
+import com.myrou.hyechilog.api.exception.InvalidPassword;
 import com.myrou.hyechilog.api.repository.blog.BlogRepository;
 import com.myrou.hyechilog.api.repository.comment.CommentRepository;
 import com.myrou.hyechilog.api.service.comment.response.CommentResponse;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 public class CommentService {
 
     private final BlogRepository blogRepository;
+    private final CommentRepository commentRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -35,5 +39,15 @@ public class CommentService {
         List<Comment> comments = blog.addComment(comment);
 
         return comments.stream().map(CommentResponse::of).collect(Collectors.toList());
+    }
+
+    public void deleteComment(Long commentId, CommentDeleteRequest request) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFound::new);
+
+        if (!passwordEncoder.matches(request.getPassword(), comment.getPassword())) {
+            throw new InvalidPassword();
+        }
+
+        commentRepository.delete(comment);
     }
 }

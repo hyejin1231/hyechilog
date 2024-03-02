@@ -2,6 +2,7 @@ package com.myrou.hyechilog.api.controller.comment;
 
 import com.myrou.hyechilog.api.controller.blog.ApiResponse;
 import com.myrou.hyechilog.api.controller.comment.request.CommentCreateRequest;
+import com.myrou.hyechilog.api.controller.comment.request.CommentDeleteRequest;
 import com.myrou.hyechilog.api.service.comment.CommentService;
 import com.myrou.hyechilog.api.service.comment.response.CommentResponse;
 import jakarta.validation.Valid;
@@ -25,6 +26,13 @@ public class CommentController {
         List<CommentResponse> commentResponses = commentService.writeComment(blogId, request);
 
         return ApiResponse.ok(commentResponses);
+    }
+
+    @PostMapping("/comments/{commentId}/delete")
+    public ApiResponse deleteComment(@PathVariable Long commentId, @RequestBody @Valid CommentDeleteRequest request) {
+        commentService.deleteComment(commentId, request);
+
+        return ApiResponse.ok(null);
     }
 
 }
