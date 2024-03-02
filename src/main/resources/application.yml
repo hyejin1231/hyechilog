@@ -8,6 +8,9 @@ spring:
         format_sql: true
     defer-datasource-initialization: true
 
+  session:
+    timeout: 86400
+
   sql:
     init:
       mode: always
@@ -23,5 +26,12 @@ spring:
     driver-class-name: org.h2.Driver
 
 
+
 hyechilog:
   secretKey: tESFRxlqGAmAiPkktb+gvKfvIRh2JpLGch2xGJtWBUg=
+
+server:
+  servlet:
+    session:
+      cookie:
+        max-age: 172800

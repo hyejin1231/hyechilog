@@ -5,11 +5,13 @@ import com.myrou.hyechilog.api.controller.blog.request.BlogEdit;
 import com.myrou.hyechilog.api.controller.blog.request.PageSearch;
 import com.myrou.hyechilog.api.service.blog.BlogService;
 import com.myrou.hyechilog.api.service.blog.response.BlogResponse;
-import com.myrou.hyechilog.config.data.UserSession;
 
+import com.myrou.hyechilog.config.security.UserPrincipal;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -27,27 +29,7 @@ import java.util.Map;
 public class BlogController {
 
     private final BlogService blogService;
-
-    /**
-     * 임시 : 인증 있어야 들어올 수 있는 페이지
-     *
-     * @return
-     */
-    @GetMapping("/test")
-    public Long testPage(UserSession userSession) {
-        log.info(">>> {}", userSession.getId());
-        return userSession.getId();
-    }
-
-    /**
-     * 임시 : 인증 없이 들어올 수 있는 페이지
-     * @return
-     */
-    @GetMapping("/welcome")
-    public String welCome() {
-        return "welcome";
-    }
-
+    
     /**
      * Blog createV1 : 블로그 글 생성
      *
@@ -102,10 +84,12 @@ public class BlogController {
      * @param request
      * @return
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/blogs/new")
-    public ApiResponse<BlogResponse> create(@RequestBody @Valid BlogCreateRequest request) {
+    public ApiResponse<BlogResponse> create(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                            @RequestBody @Valid BlogCreateRequest request) {
         request.validate();
-        BlogResponse blog = blogService.write(request);
+        BlogResponse blog = blogService.write(request, userPrincipal.getUserId());
         return ApiResponse.ok(blog);
     }
 
@@ -154,6 +138,7 @@ public class BlogController {
      * @param blogEdit : 블로그 수정만 담은 vo
      * @return
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/blogs/{blogId}")
     public ApiResponse<BlogResponse> editBlog(@PathVariable long blogId, @RequestBody BlogEdit blogEdit)
     {
@@ -165,6 +150,8 @@ public class BlogController {
      * @param blogId
      * @return
      */
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')  && hasPermission(#blogId,'BLOG' , 'DELETE')")
     @DeleteMapping("/blogs/{blogId}")
     public ApiResponse deleteBlog(@PathVariable long blogId)
     {

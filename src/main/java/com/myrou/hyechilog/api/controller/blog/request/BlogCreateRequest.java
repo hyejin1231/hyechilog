@@ -1,6 +1,7 @@
 package com.myrou.hyechilog.api.controller.blog.request;
 
 import com.myrou.hyechilog.api.domain.blog.Blog;
+import com.myrou.hyechilog.api.domain.blog.User;
 import com.myrou.hyechilog.api.exception.InvalidRequest;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
@@ -24,10 +25,11 @@ public class BlogCreateRequest {
         this.content = content;
     }
 
-    public static Blog toEntity(BlogCreateRequest request) {
+    public static Blog toEntity(BlogCreateRequest request, User user) {
         return Blog.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
+                .user(user)
                 .build();
     }
 

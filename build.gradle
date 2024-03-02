@@ -29,7 +29,16 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	// security
+	implementation "org.springframework.boot:spring-boot-starter-security"
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// security + jdbc session
+	implementation "org.springframework.session:spring-session-jdbc"
+
 	// ⭐ Spring boot 3.x이상에서 QueryDsl 패키지를 정의하는 방법
+	implementation 'com.querydsl:querydsl-core:5.0.0'
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
@@ -54,6 +63,10 @@ dependencies {
 	// RestDocs
 	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+	// test lombok
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {

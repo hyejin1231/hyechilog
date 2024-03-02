@@ -9,6 +9,7 @@ import javax.crypto.SecretKey;
 
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +35,12 @@ public class AuthController
 	private final AuthService authService;
 	
 	private final AppConfig appConfig;
+	
+	@GetMapping("/auth/login")
+	public String login()
+	{
+		return "로그인 페이지 입니다.";
+	}
 	
 //	private static final String KEY = "tESFRxlqGAmAiPkktb+gvKfvIRh2JpLGch2xGJtWBUg=";
 	
@@ -63,7 +70,7 @@ public class AuthController
 	}
 	 */
 	
-	@PostMapping("/auth/login")
+//	@PostMapping("/auth/login")
 	public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest)
 	{
 		// 2) DB 에서 조회

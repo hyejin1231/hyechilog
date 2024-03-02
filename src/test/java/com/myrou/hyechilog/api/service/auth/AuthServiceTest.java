@@ -1,7 +1,5 @@
 package com.myrou.hyechilog.api.service.auth;
 
-import com.myrou.hyechilog.support.crypto.PasswordEncoder;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,15 +11,11 @@ import com.myrou.hyechilog.api.controller.auth.request.SignRequest;
 import com.myrou.hyechilog.api.domain.blog.User;
 import com.myrou.hyechilog.api.exception.AlreadyExistsException;
 import com.myrou.hyechilog.api.exception.InvalidLoginInformation;
-import com.myrou.hyechilog.api.exception.UnAuthorized;
-import com.myrou.hyechilog.api.repository.user.SessionRepository;
 import com.myrou.hyechilog.api.repository.user.UserRepository;
-import com.myrou.hyechilog.api.service.auth.response.AuthResponse;
 import com.myrou.hyechilog.api.service.auth.response.SignResponse;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -33,13 +27,9 @@ class AuthServiceTest
 	@Autowired
 	private UserRepository userRepository;
 	
-	@Autowired
-	private SessionRepository sessionRepository;
-	
 	@BeforeEach
 	void setUp()
 	{
-		sessionRepository.deleteAll();
 		userRepository.deleteAll();
 	}
 	
@@ -124,39 +114,5 @@ class AuthServiceTest
 						AlreadyExistsException.class)
 				.hasMessage("이미 가입된 이메일입니다.");
 	}
-
-	@Test
-	@DisplayName("로그인 성공 테스트")
-	public void loginPassTest() {
-		// given
-		User user = User.builder()
-				.email("hyechilog@gmail.com")
-				.password("1231").build();
-		User save = userRepository.save(user);
-
-		LoginRequest request = LoginRequest.builder().email("hyechilog@gmail.com").password("1231").build();
-
-		// when
-		Long userId = authService.login(request);
-
-		// then
-		assertThat(userId).isEqualTo(save.getId());
-	}
-
-	@Test
-	@DisplayName("로그인 실패 테스트")
-	public void loginFailTest2() {
-		// given
-		User user = User.builder()
-				.email("hyechilog@gmail.com")
-				.password("1231").build();
-		userRepository.save(user);
-
-		LoginRequest request = LoginRequest.builder().email("hyechilog@gmail.com").password("1231111").build();
-
-		// when
-		assertThatThrownBy(() -> {
-			authService.login(request);
-		}).isInstanceOf(InvalidLoginInformation.class).hasMessage("아이디/비밀번호를 올바르게 입력하세요.");
-	}
+	
 }

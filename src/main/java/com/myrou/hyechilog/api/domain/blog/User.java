@@ -33,7 +33,7 @@ public class User
 	private LocalDateTime createdAt;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-	private List<Session> sessions = new ArrayList<>();
+	private List<Blog> blogs;
 	
 	@Builder
 	public User(String name, String email, String password)
@@ -44,11 +44,4 @@ public class User
 		this.createdAt = LocalDateTime.now();
 	}
 	
-	public Session addSession()
-	{
-		Session session = Session.builder().user(this).build();
-		sessions.add(session);
-		
-		return session;
-	}
 }

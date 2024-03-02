@@ -1,11 +1,42 @@
-### 로그인
+### 회원가입
+POST http://localhost:8080/auth/sign
+Content-Type: application/json
+
+{
+  "name": "hyechi",
+  "email": "hyechilog@gmail.com",
+  "password": "1231"
+}
+
+### 로그인_폼 로그인 형식 (성공)
+POST http://localhost:8080/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=hyechilog@gmail.com&password=1231&rembmer=1
+
+### 로그인_폼 로그인 형식 (실패)
+POST http://localhost:8080/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=hyechilog111@gmail.com&password=1231&rembmer=1
+
+### 로그인_JSON 형식
 POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "email" : "hyechii@gmail.com",
-  "password": "1231"
+  "email" : "hyechilog@gmail.com",
+  "password" : "1231"
 }
+
+### 메인 페이지
+GET http://localhost:8080
+
+### 사용자 페이지
+GET http://localhost:8080/user
+
+### 관리자 페이지
+GET http://localhost:8080/admin
 
 ### 인증 페이지 요청
 GET http://localhost:8080/api/v1/test
